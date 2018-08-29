@@ -36,3 +36,12 @@ devtools::install_github(github_packages)
 ```
 
 Now that this is done simply navigate to `app.R` and press the 'Run App' button. 
+
+## Screenshots
+
+__Data Entry/ Landing Page__
+
+![](https://github.com/tbilab/multimorbidity_explorer/raw/master/screenshots/data_entry.png)
+
+__Main App/ Dashboard__
+![](https://github.com/tbilab/multimorbidity_explorer/raw/master/screenshots/main_app.png)
