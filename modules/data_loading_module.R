@@ -22,7 +22,7 @@ data_loading_UI <- function(id) {
                     accept = ACCEPTED_FORMATS
                     
           ),
-          fileInput(ns("genome"), "Id to SNP file",
+          fileInput(ns("genome"), "ID to SNP file",
                     accept = ACCEPTED_FORMATS
                     
           ),
