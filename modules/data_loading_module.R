@@ -1,12 +1,5 @@
-library(here)
-library(magrittr)
-library(plotly)
-library(r2d3)
-library(network3d)
-
 source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
 source(here('helpers/input_checker_functions.R'))
-
 
 options(shiny.maxRequestSize=30*1024^2) # increase size of files we can take uploaded to 30 megs.
 

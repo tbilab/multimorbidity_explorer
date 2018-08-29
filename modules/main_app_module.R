@@ -1,8 +1,3 @@
-library(magrittr)
-library(plotly)
-library(r2d3)
-library(network3d)
-
 source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
 source(here('helpers/helpers.R'))
 source(here('helpers/code_filtering.R'))

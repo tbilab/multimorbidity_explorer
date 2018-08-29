@@ -1,9 +1,11 @@
-# testing main app module in own shiny app.
 library(shiny)
 library(shinydashboard)
 library(tidyverse)
 library(here)
-library(shinyjs)
+library(magrittr)
+library(plotly)
+library(r2d3)
+library(network3d)
 
 source(here('modules/data_loading_module.R'))
 source(here('modules/main_app_module.R'))
