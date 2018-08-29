@@ -1,0 +1,7 @@
+*.csv
+*.rds
+.Rproj.user
+rsconnect/
+upset_interactive/*.rds
+.Rhistory
+.RData

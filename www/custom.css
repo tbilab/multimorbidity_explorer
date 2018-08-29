@@ -1,0 +1,99 @@
+
+/* 
+  Box headers are roughly 40 pixels tall 
+  Top of page + padding is 50 + 30 pixels = 80 pixels tall.   
+*/
+
+/*
+  Left Column
+  top + 3 headers + 2 paddings + 4 inner paddings = 80 + 120 + 20 + 40 = 260
+*/
+
+#manhattanPlot {
+  height: calc(40vh - 130px) !important;
+} 
+
+#upset2 {
+  height: calc(60vh - 130px) !important;
+}
+
+/*
+  Right Column
+  Top of page + 2 normal headers + tabbed header + legend + info box + 2 inner paddings
+  80          + 2*40             + 43 +            55     + 165 + 20
+  3 headers 
+*/
+.networkPlot {
+  height: calc(100vh - 440px) !important;
+} 
+
+
+.skin-black .main-header>.logo {
+   border-right: 0;
+}
+
+.main-header .logo {
+  font-family: "Georgia", Times, "Times New Roman", serif;
+  font-weight: bold;
+}
+
+.box-title {
+  font-family: "Georgia", Times, "Times New Roman", serif;
+}
+
+#selected_code_box, #network_plot_box {
+  margin-top: -18px;
+}
+
+.box-body {
+  margin-top: -10px;
+}
+
+svg text {
+  pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.checkbox {
+  margin-top: 0;
+}
+
+.network_controls {
+  display: inline-block;
+  vertical-align: top; 
+  width: 210px;  
+  white-space: nowrap;
+}
+
+.legend_entry {
+  color: white;
+  border-radius: 10px;
+  padding: 0px 5.8px;
+}
+
+.network_header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.snp_selector {
+  background: white;
+  border-radius: 3px;
+  padding: 0px 9px;
+  margin-bottom: -12px;
+}
+
+.snp_selector .control-label {
+  font-weight: normal;
+  font-size: 18px;
+  font-family: "Georgia", Times, "Times New Roman", serif;
+  padding-top: 3px;
+}
+
+#table_selection {
+  padding-top: 8px;
+  text-align: right;
+}
