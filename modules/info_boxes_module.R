@@ -1,3 +1,4 @@
+source(here('helpers/genome_browser_link.R'))
 
 info_boxes_UI <- function(id, app_ns) {
   ns <- . %>% NS(id)() %>% app_ns()
@@ -18,7 +19,8 @@ info_boxes <- function(input, output, session, snp_name, individual_data, subset
   output$currentSnp <- renderValueBox({
     valueBox(
       snp_name, "Current SNP", icon = icon("id-badge"),
-      color = "maroon"
+      color = "maroon",
+      href = make_genome_browser_link(snp_name)
     )
   })
   
