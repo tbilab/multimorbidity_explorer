@@ -59,7 +59,8 @@ upset2 <- function(input, output, session, codeData, snpData, currentSnp, minSiz
       summarise(
         count = n(), 
         size = last(size),
-        num_snp = sum(snp)
+        num_snp = sum(snp), 
+        risk = num_snp/count
       ) %>% {
         this <- .
         if(!is.null(minSize)){
