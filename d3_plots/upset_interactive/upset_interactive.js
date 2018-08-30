@@ -453,4 +453,3 @@ marginalBars.append('text')
     opacity: 0,
     "class": "margingMouseoverInfo"
   })
-  

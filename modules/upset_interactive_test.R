@@ -7,11 +7,12 @@ library(r2d3)
 
 source(here('modules/upset_interactive.R'))
 
-codeData <- here('d3_plots/upset_interactive/upset_data.rds') %>% 
+upsetData <- here('d3_plots/upset_interactive/upset_data.rds') %>% 
   readr::read_rds()
 
-snp_data <- here('d3_plots/upset_interactive/snp_copies.rds') %>% 
-  readr::read_rds()
+codeData <- upsetData$codeData
+snpData <- upsetData$snpData
+minSize <- 20
 
 currentSnp <- 'rs5908'
 
@@ -28,14 +29,12 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   observe({
-    print('set size')
-    print(input$setSize)
-    callModule(upset2, 'upsetPlotV2', 
-               codeData = codeData, 
-               snpData = snp_data, 
-               currentSnp = currentSnp, 
-               minSize = input$setSize
-    )  
+    # print('set size')
+    # print(input$setSize)
+    callModule(upset2, 'upsetPlotV2',
+               codeData = codeData,
+               snpData = snpData,
+               minSize = minSize )
   })
   
 }
