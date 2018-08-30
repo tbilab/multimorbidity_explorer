@@ -97,8 +97,8 @@ upset2 <- function(input, output, session, codeData, snpData, currentSnp, minSiz
   
     setData %>% 
       r2d3(
-        script = here('d3_plots/upset_interactive/upset_interactive.js'), 
-        css = here('d3_plots/upset_interactive/upset.css'),
+        script = here('d3_plots/upset_interactive.js'), 
+        css = here('d3_plots/upset.css'),
         dependencies = "d3-jetpack",
         options = list(marginalData = marginalData, overallMaRate = overallMaRate)
       )

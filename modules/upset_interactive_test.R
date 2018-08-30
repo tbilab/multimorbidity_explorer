@@ -7,7 +7,7 @@ library(r2d3)
 
 source(here('modules/upset_interactive.R'))
 
-upsetData <- here('d3_plots/upset_interactive/upset_data.rds') %>% 
+upsetData <- here('data/upset_data.rds') %>% 
   readr::read_rds()
 
 codeData <- upsetData$codeData
@@ -29,8 +29,6 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   observe({
-    # print('set size')
-    # print(input$setSize)
     callModule(upset2, 'upsetPlotV2',
                codeData = codeData,
                snpData = snpData,
