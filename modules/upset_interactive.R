@@ -1,3 +1,5 @@
+source(here('helpers/upset_helpers.R'))
+
 upset2_UI <- function(id) {
   ns <- NS(id)
   
@@ -41,13 +43,16 @@ upset2 <- function(input, output, session, codeData, snpData, currentSnp, minSiz
           Total = n(),
           PropMa = MaCarriers/Total
         ) %>% {
-          testResults <- binom.test(x = .$MaCarriers[2], n = .$Total[2], p = .$PropMa[1])
+          
+          # browser()
+          # testResults <- binom.test(x = .$MaCarriers[2], n = .$Total[2], p = .$PropMa[1])
+          RR_results <- calc_RR_CI(.$Total[2], .$MaCarriers[2], .$Total[1], .$MaCarriers[1])
           
           data_frame(
-            pVal = testResults$p.value,
-            pointEst = testResults$estimate,
-            lowerOr = testResults$conf.int[1],
-            upperOr = testResults$conf.int[2]
+            # pVal = testResults$p.value,
+            pointEst = RR_results$PE,
+            lower = RR_results$lower,
+            upper = RR_results$upper
           )
         } 
     }
@@ -59,8 +64,7 @@ upset2 <- function(input, output, session, codeData, snpData, currentSnp, minSiz
       summarise(
         count = n(), 
         size = last(size),
-        num_snp = sum(snp), 
-        risk = num_snp/count
+        num_snp = sum(snp)
       ) %>% {
         this <- .
         if(!is.null(minSize)){

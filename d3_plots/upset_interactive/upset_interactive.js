@@ -74,6 +74,7 @@ const codeList = Object.keys(
 // ----------------------------------------------------------------------
 // Scales
 // ----------------------------------------------------------------------
+
 const matrixWidthScale = d3.scaleBand()
   .domain(codeList)
   .range([matrixPadding,matrixPlotWidth - matrixPadding])
@@ -90,7 +91,7 @@ const countX = d3.scaleLinear()
 
 const proportionX = d3.scaleLinear()
   .range([0,proportionPlotWidth])
-  .domain([0,d3.max(data, d => d.upperOr)]);
+  .domain([0,d3.max(data, d => d.upper)]);
   
 const y = d3.scaleLinear()
   .range([marginalChartHeight, h])
@@ -184,8 +185,8 @@ matrixChart.selectAll('.currentRow')
     const intervalBar = proportionBar
       .append('line')
       .at({
-        x1: proportionX(currentEntry.lowerOr),
-        x2: proportionX(currentEntry.upperOr),
+        x1: proportionX(currentEntry.lower),
+        x2: proportionX(currentEntry.upper),
         y1: verticalSpace/2, y2: verticalSpace/2,
         stroke: currentEntry.pointEst === 0 ? 'darkgrey': 'orangered',
         strokeWidth: ciThickness,
@@ -204,7 +205,7 @@ matrixChart.selectAll('.currentRow')
  
     proportionBar
       .append('text')
-      .html(d => `<tspan>CI:</tspan> (${CiFormat(currentEntry.lowerOr)},${CiFormat(currentEntry.upperOr)})`)
+      .html(d => `<tspan>Relative Risk:</tspan> ${pValFormat(currentEntry.pointEst)}`)
       .at({
         x: 50,
         y: -y(i) + marginalChartHeight/3.5,
@@ -216,7 +217,7 @@ matrixChart.selectAll('.currentRow')
       
     proportionBar
       .append('text')
-      .html(d => `<tspan>P-Value:</tspan> ${pValFormat(currentEntry.pVal)}`)
+      .html(d => `<tspan>CI:</tspan> (${CiFormat(currentEntry.lower)},${CiFormat(currentEntry.upper)})`)
       .at({
         x: 50,
         y: -y(i) + marginalChartHeight/2,
@@ -312,38 +313,17 @@ proportionAxis.append('text')
     y: h - marginalChartHeight+ 20,
   })
   .classed('axisTitles', true)
-  .text('MA Proportion')
+  .text('MA Relative Risk')
 
 // Add a line to show overall snp proportions
 proportionAxis.append('line')
   .at({
-    x1: proportionX(options.overallMaRate),
-    x2: proportionX(options.overallMaRate), 
+    x1: proportionX(1),
+    x2: proportionX(1), 
     y1: 0,
     y2: h - marginalChartHeight,
     stroke: 'black',
-    opacity: 0.2,
-  })
-
-proportionAxis.append('line')
-  .at({
-    x1: proportionX(options.overallMaRate) + 10,
-    x2: proportionX(options.overallMaRate), 
-    y1: h - marginalChartHeight + 20,
-    y2: h - marginalChartHeight,
-    stroke: 'black',
-    opacity: 0.2,
-  })
-  
-proportionAxis.append('text')
-  .text(`Overall Proportion: ${CiFormat(options.overallMaRate)}`)
-  .at({
-    x: proportionX(options.overallMaRate) + 11,
-    y: h - marginalChartHeight + 25,
-    textAnchor: 'start',        
-    alignmentBaseline: 'hanging',
-    fontSize: 14,
-    fill: 'grey'
+    opacity: 0.8,
   })
 
 
