@@ -1,15 +1,6 @@
-library(shiny)
-library(shinydashboard)
-library(tidyverse)
-library(here)
-library(magrittr)
-library(plotly)
-library(r2d3)
-library(glue)
-library(network3d)
-
-source(here('modules/data_loading_module.R'))
-source(here('modules/main_app_module.R'))
+source(here::here('helpers/load_libraries.R'))
+source(here::here('modules/data_loading_module.R'))
+source(here::here('modules/main_app_module.R'))
 
 ui <- shinyUI(
   dashboardPage(

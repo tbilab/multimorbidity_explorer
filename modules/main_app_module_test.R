@@ -1,15 +1,6 @@
 # testing main app module in own shiny app.
-library(shiny)
-library(shinydashboard)
-library(tidyverse)
-library(here)
-library(magrittr)
-library(plotly)
-library(r2d3)
-library(glue)
-library(network3d)
-
-source(here('modules/main_app_module.R'))
+source(here::here('helpers/load_libraries.R'))
+source(here::here('modules/main_app_module.R'))
 
 cached_data <- read_rds(here('data/preloaded_rs13283456.rds'))
 

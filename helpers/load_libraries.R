@@ -1,0 +1,11 @@
+# loads all the libraries needed for the app. 
+library(shiny)
+library(shinydashboard)
+library(tidyverse)
+library(here)
+library(magrittr)
+library(plotly)
+library(r2d3)
+library(glue)
+library(network3d)
+library(DT)
