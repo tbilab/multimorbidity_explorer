@@ -9,7 +9,11 @@ const case_opacity = 1;
 const edge_color = '#aaa';
 const edge_opacity = options.just_snp ? 0.2: 0.07;
 
-const small_edge = width < height ? width: height,
+// for some reason the canvas width and height sometimes are out of sync with the passed width and height variables. 
+const w = +canvas.attr('width');
+const h = +canvas.attr('height');
+
+const small_edge = w < h? w: h,
       OUTER_RING_RADIUS = (small_edge/2)*0.35,
       INNER_RING_RADIUS = (small_edge/2)*0.01;
 
@@ -26,7 +30,6 @@ let current_transform = d3.zoomIdentity;
 const sendCodeVector = (selectedCodes) => [Date.now().toString(), ...selected_codes];
 
 function sendMessage(type, selected_codes = []){
-
   Shiny.onInputChange(
     options.msg_loc,
     {
@@ -34,17 +37,15 @@ function sendMessage(type, selected_codes = []){
       payload: sendCodeVector(selected_codes)
     }
   );
-    
 };
-
 
 const svg = container.selectAppend('svg')
   .st({
     position: 'absolute',
     bottom: div_padding_bottom, 
     left: div_padding_left,
-    width: width, 
-    height: height
+    width: w, 
+    height: h
   });
   
 const tooltip = container.selectAppend('div.network_tooltip')
@@ -105,7 +106,6 @@ if(options.just_snp){
       sendMessage('invert', selected_codes);
     });  
 } 
-
   
 const hidden_style = {
   display: 'none',
@@ -183,10 +183,10 @@ const pheno_circs = svg.selectAll('circle')
   
   
 const x = d3.scaleLinear()
-  .range([padding, width-padding]);
+  .range([padding, w-padding]);
   
 const y = d3.scaleLinear()
-  .range([padding,height-padding]);
+  .range([padding,h-padding]);
 
 const simulation = d3.forceSimulation(vertices)
     .force("link", 
@@ -199,8 +199,8 @@ const simulation = d3.forceSimulation(vertices)
       d3.forceManyBody()
         .strength(-8)
     )
-    .force("xAxis",d3.forceX(width/2))
-    .force("yAxis",d3.forceY(height/2))
+    .force("xAxis",d3.forceX(w/2))
+    .force("yAxis",d3.forceY(h/2))
     .on("tick", ticked);
   
 svg.call(
@@ -213,6 +213,8 @@ function zoom(){
   current_transform = d3.event.transform;
   ticked();
 }
+
+//debugger;
 
 function ticked() {
   x.domain(d3.extent(vertices, d => d.x));
@@ -228,7 +230,7 @@ function ticked() {
       cy: d => zoomed_y(d.y)
     });
 
-  context.clearRect(0, 0, width, height);
+  context.clearRect(0, 0, +canvas.attr('width'), +canvas.attr('height'));
   context.save();
   context.globalAlpha = edge_opacity;
   
