@@ -1,14 +1,10 @@
 # testing main app module in own shiny app.
-library(shiny)
-library(shinydashboard)
-library(magrittr)
-library(tidyverse)
-library(here)
-
+source(here::here('helpers/load_libraries.R'))
 source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
 source(here('modules/network_plots_module.R'))
 
-cached_data <- read_rds(here('data/testing/network_module_data.rds'))
+
+cached_data <- read_rds(here('data/network_data.rds'))
 
 subset_data <- cached_data$subset_data
 results_data <- cached_data$results_data
