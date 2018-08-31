@@ -2,10 +2,16 @@
 library(epitools)
 
 calc_RR_CI <- function(pattern_n, pattern_snp, other_n, other_snp, CI_size = 0.95){
+  # cont_table <- matrix(c(
+  #   pattern_snp, (pattern_n - pattern_snp),
+  #   other_snp, (other_n - other_snp)
+  # ), nrow = 2, byrow = TRUE
+  # )
+  
   cont_table <- matrix(c(
-    pattern_snp, (pattern_n - pattern_snp),
-    other_snp, (other_n - other_snp)
-  ), nrow = 2, byrow = TRUE
+    pattern_snp,  other_snp,
+    (pattern_n - pattern_snp), (other_n - other_snp)
+    ), nrow = 2, byrow = TRUE
   )
   
   RR_estimates <- riskratio.small(cont_table, rev = "b", conf.level = CI_size)$measure[2,] 
