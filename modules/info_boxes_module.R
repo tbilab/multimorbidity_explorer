@@ -16,11 +16,24 @@ info_boxes_UI <- function(id, app_ns) {
 
 info_boxes <- function(input, output, session, snp_name, individual_data, subset_data) {
   
+  
+  onclick('currentSnp', function(){
+    print('clicked the thingy!')
+    snp_info <- getSNPInfo(snp_name)
+    
+    showModal(modalDialog(
+      title = sprintf("Info on %s", snp_name),
+      code(snp_info),
+      "Well hey there!",
+      easyClose = TRUE
+    ))
+  })
+  
   output$currentSnp <- renderValueBox({
     valueBox(
       snp_name, "Current SNP", icon = icon("id-badge"),
-      color = "maroon",
-      href = make_genome_browser_link(snp_name)
+      color = "maroon"
+      # href = make_genome_browser_link(snp_name)
     )
   })
   
