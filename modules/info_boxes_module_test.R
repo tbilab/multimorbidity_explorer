@@ -23,7 +23,6 @@ ui <- shinyUI(
     ),
     dashboardBody(
       includeCSS(here("www/test_app.css")),
-      useShinyjs(debug = TRUE),
       info_boxes_UI('info_boxes', I)
     ),
     skin = 'black'

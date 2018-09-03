@@ -7,62 +7,23 @@ info_boxes_UI <- function(id, app_ns) {
     box(title = "Population Statistics",
         width = NULL,
         solidHeader=TRUE,
-        valueBoxOutput(ns("currentSnp")),
-        valueBoxOutput(ns("popPercentSnp")),
-        valueBoxOutput(ns("numAlleleCarriersCurrent"))
+        r2d3::d3Output(ns("info_banner"), height = '120px')
     )
   )
 }
 
 info_boxes <- function(input, output, session, snp_name, individual_data, subset_data) {
   
+  snp_info <- getSNPInfo(snp_name)
+  snp_info$snp <- snp
+  snp_info$maf_exome <- mean(individual_data$snp)
+  snp_info$maf_sel <- mean(subset_data$snp)
   
-  onclick('currentSnp', function(){
-    print('clicked the thingy!')
-    snp_info <- getSNPInfo(snp_name)
-    
-    showModal(modalDialog(
-      title = sprintf("Info on %s", snp_name),
-      code(snp_info),
-      "Well hey there!",
-      easyClose = TRUE
-    ))
-  })
-  
-  output$currentSnp <- renderValueBox({
-    valueBox(
-      snp_name, "Current SNP", icon = icon("id-badge"),
-      color = "maroon"
-      # href = make_genome_browser_link(snp_name)
+  output$info_banner <- r2d3::renderD3({
+    r2d3::r2d3(
+      snp_info,
+      script = here('d3_plots/info_banner.js'),
+      css = here('d3_plots/info_banner.css')
     )
   })
-  
-  output$popPercentSnp <- renderValueBox({
-    snp_perc <- individual_data %>%
-      summarise(
-        perc_carriers = (sum(snp > 0)/n())*100
-      ) %>%
-      round(3)
-    
-    valueBox(
-      snp_perc, "MAF in Exome Cohort", icon = icon("percent"),
-      color = "olive"
-    )
-  })
-
-  output$numAlleleCarriersCurrent <- renderValueBox({
-    stats <- subset_data %>%
-      summarise(
-        all = n(),
-        carriers = sum(snp > 0)
-      )
-    
-    valueBox(
-      paste(stats$carriers, '/', stats$all),
-      "MA Carrier to Total # Cases",
-      icon = icon("braille"),
-      color = "purple"
-    )
-  }) 
-  
 }

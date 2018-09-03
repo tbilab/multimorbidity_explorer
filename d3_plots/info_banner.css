@@ -2,6 +2,7 @@
   fill: white;
   alignment-baseline: middle;
   text-anchor: middle;
+  font-size: 10px;
 }
 
 .labels {
@@ -28,5 +29,4 @@
 
 .genome_browser_link {
   text-decoration: underline;
-  cursor: pointer;
 }

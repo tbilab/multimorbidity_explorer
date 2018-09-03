@@ -1,7 +1,7 @@
 // Info banner for SNP name, MAF for current selection and the entire exome cohort. Along with link to click for genome browser location of SNP.
 const {snp, maf_exome, maf_sel, gene, chromosome} = data;
 
-const padding = 10;
+const padding = 15;
 const exome_color = 'steelblue';
 const sel_color = 'orangered';
 const maf_chart_start = width/3;
@@ -80,12 +80,8 @@ maf_plot.enter().append('circle')
   .attr('r', point_r)
   .attr('fill', d => d.group == 'Exome Cohort' ? exome_color: sel_color);
   
-
 maf_plot.enter().append('text')
   .text(d => toPercent(d.maf))
   .attr('class', 'maf_points')
   .attr('x', d => x(d.maf))
-  .attr('y', d => height/2)
-  .attr('font-size', 15);
-  
-svg.style('background', 'lightblue');
+  .attr('y', d => height/2);
