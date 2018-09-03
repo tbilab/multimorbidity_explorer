@@ -4,10 +4,13 @@ info_boxes_UI <- function(id, app_ns) {
   ns <- . %>% NS(id)() %>% app_ns()
   
   tagList(
-    box(title = "Population Statistics",
-        width = NULL,
-        solidHeader=TRUE,
-        r2d3::d3Output(ns("info_banner"), height = '120px')
+    div(
+      id = 'info_banner',
+      box(title = "",
+          width = NULL,
+          solidHeader=TRUE,
+          r2d3::d3Output(ns("info_banner"), height = '150px')
+      )
     )
   )
 }

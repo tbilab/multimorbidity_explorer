@@ -22,7 +22,7 @@ ui <- shinyUI(
       collapsed = TRUE
     ),
     dashboardBody(
-      includeCSS(here("www/test_app.css")),
+      includeCSS(here("www/custom.css")),
       info_boxes_UI('info_boxes', I)
     ),
     skin = 'black'

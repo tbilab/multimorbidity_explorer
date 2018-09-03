@@ -97,3 +97,8 @@ svg text {
   padding-top: 8px;
   text-align: right;
 }
+
+#info_banner .box-header {
+  height: 0px;
+  padding: 0px;
+}
