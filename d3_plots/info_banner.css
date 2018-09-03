@@ -10,7 +10,9 @@
 }
 
 .snp_name {
+  alignment-baseline: hanging;
   text-anchor: start;
+  font-weight: bold;
   font-size: 30px;
 }
 
@@ -18,4 +20,13 @@
   stroke: black;
   opacity: 0.2;
   stroke-width: 2px;
+}
+
+.snp_info {
+  font-weight: bold;
+}
+
+.genome_browser_link {
+  text-decoration: underline;
+  cursor: pointer;
 }
