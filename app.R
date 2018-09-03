@@ -24,7 +24,6 @@ ui <- shinyUI(
   )
 )
 
-
 server <- function(input, output, session) {
   
   set_size_slider <- reactive({input$setSize})

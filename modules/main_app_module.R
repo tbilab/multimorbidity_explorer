@@ -130,11 +130,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     req(app_data$subset_data, set_size_slider())
     setSize <- set_size_slider()
 
-    if(app_data$snp_filter){
-      minSize <- 1
-    } else {
-      minSize <- setSize
-    }
+    minSize <- ifelse(app_data$snp_filter, 1, setSize)
 
     codeData <- app_data$subset_data %>%
       mutate(snp = ifelse(snp != 0, 1, 0))
