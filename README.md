@@ -70,7 +70,7 @@ __ID to SNP file__: Mapping between individual's IDs and the number of copies of
 - `snp`: Integer corresponding to the number of copies of the minor allele the individual possesses. 
 
 
-__ID to phenome file__: A mapping between an individuals ID and present phenotypes. If an individual has 10 present phenotypes they will have 10 columns in this csv; 25 phenotypes: 25 columns, etc.. Columns are: 
+__ID to phenome file__: A mapping between an individuals ID and present phenotypes. If an individual has 10 present phenotypes they will have 10 rows in this csv; 25 phenotypes: 25 rows, etc.. Columns are: 
 
 - `IID`: Unique identifying character ID for each individual (matches same column in __ID to SNP file__.)
 - `code`: Unique identifying character ID for a given phenotype. This should match the column of the same name in __Phewas results file__.
