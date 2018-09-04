@@ -6,7 +6,9 @@ const exome_color = 'steelblue';
 const sel_color = 'orangered';
 const maf_chart_start = width/3;
 const label_gap= 35;
-const point_r = 15;
+const point_r = 20;
+const selection_height = height/2 - (point_r*1.1);
+const exome_height =     height/2 + (point_r*1.1);
 const max_freq = Math.max(maf_exome, maf_sel)*1.1;
 
 // turns proportion into a rounded percentange
@@ -19,17 +21,19 @@ svg.append('text')
   .attr('x', 10)
   .attr('y', 10);
   
-svg.append('text')
+const snp_details = svg.append('g').attr('id', 'snp_details');
+
+snp_details.append('text')
   .html(`Gene: <tspan class = 'snp_info'>${gene}</tspan>`)
   .attr('x', 10)
   .attr('y', height - 50);
   
-svg.append('text')
+snp_details.append('text')
   .html(`Chromosome: <tspan class = 'snp_info'>${chromosome}</tspan>`)
   .attr('x', 10)
   .attr('y', height - 30);
   
-svg.append('text')
+snp_details.append('text')
   .html(`Genome Browser Link`)
   .attr('class', 'genome_browser_link')
   .attr('x', 10)
@@ -42,46 +46,42 @@ const x = d3.scaleLinear()
   
 
 svg.append("g")
-  .attr("transform", `translate(0,${height/2})`)
+  .attr("transform", `translate(0,${exome_height})`)
   .call( d3.axisBottom(x)
     .tickValues([0, max_freq])
     .tickFormat(toPercent)
     .tickSizeOuter(0)
   );
+  
+svg.append('line')
+  .attr('x1', x(0))
+  .attr('x2', x(max_freq))
+  .attr('y1', selection_height)
+  .attr('y2', selection_height)
+  .attr('stroke', 'black')
+  .attr('stroke-width', 1);
       
   
 const maf_plot = svg.selectAll('#maf_plot')
-  .data([
-    {group: 'Exome Cohort', maf: maf_exome},
-    {group: 'Current Selection', maf: maf_sel}
-  ]);
+  .data([ {group: 'Exome Cohort', maf: maf_exome},
+          {group: 'Current Selection', maf: maf_sel} ])
+  .enter().append('g')
+  .attr('transform', d => `translate(${x(d.maf)}, ${d.group == 'Exome Cohort' ? exome_height: selection_height} )`);
 
-// lines from axis to group label
-maf_plot.enter().append('line')
-  .attr('x1', d => x(d.maf))
-  .attr('x2', d => x(d.maf))
-  .attr('y1', height/2)
-  .attr('y2', d => height/2 + (d.group == 'Exome Cohort' ? -label_gap: label_gap))
-  .attr('stroke', 'black')
-  .attr('stroke-width', 1);
-  
+
 // group label text
-maf_plot.enter().append('text')
+maf_plot.append('text')
   .text(d => d.group)
   .attr('class', 'labels')
-  .attr('x', d => x(d.maf) - 2)
-  .attr('y', d => height/2 + (d.group == 'Exome Cohort' ? -label_gap: label_gap))
-  .attr('font-size', 20);
+  .attr('alignment-baseline', d => d.group == 'Exome Cohort' ? 'hanging': 'baseline')
+  .attr('y',  d => d.group == 'Exome Cohort' ? 2: -3)
+  .attr('x', -(point_r + 3));
 
 // points on axis for groups
-maf_plot.enter().append('circle')
-  .attr('cx', d => x(d.maf))
-  .attr('cy', height/2)
+maf_plot.append('circle')
   .attr('r', point_r)
   .attr('fill', d => d.group == 'Exome Cohort' ? exome_color: sel_color);
   
-maf_plot.enter().append('text')
-  .text(d => toPercent(d.maf))
-  .attr('class', 'maf_points')
-  .attr('x', d => x(d.maf))
-  .attr('y', d => height/2);
+maf_plot.append('text')
+  .text(d => toPercent(d.maf).replace('%',''))
+  .attr('class', 'maf_points');

@@ -6,7 +6,7 @@ results <- getSNPInfo(snp)
 
 results$snp <- snp
 results$maf_exome <- 0.05
-results$maf_sel <- 0.06
+results$maf_sel <- 0.051
 
 r2d3::r2d3(
   results, 

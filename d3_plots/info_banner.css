@@ -2,12 +2,12 @@
   fill: white;
   alignment-baseline: middle;
   text-anchor: middle;
-  font-size: 10px;
+  font-size: 16px;
 }
 
 .labels {
-  alignment-baseline: middle;
   text-anchor: end;
+  font-size: 20px;
 }
 
 .snp_name {
@@ -23,9 +23,14 @@
   stroke-width: 2px;
 }
 
+#snp_details text {
+  font-size: 18px;
+}
+
 .snp_info {
   font-weight: bold;
 }
+
 
 .genome_browser_link {
   text-decoration: underline;
