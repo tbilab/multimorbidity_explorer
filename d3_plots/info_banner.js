@@ -53,7 +53,6 @@ snp_details.append('text')
 const x = d3.scaleLinear()
   .domain([0,max_freq])
   .range([maf_chart_start, width - padding]);
-  
 
 svg.append("g")
   .attr("transform", `translate(0,${exome_height})`)
@@ -83,8 +82,7 @@ const maf_plot = svg.selectAll('#maf_plot')
 maf_plot.append('text')
   .text(d => d.group)
   .attr('class', 'labels')
-  .attr('alignment-baseline', d => d.group == 'Entire Cohort' ? 'hanging': 'baseline')
-  .attr('y',  d => d.group == 'Entire Cohort' ? 2: -3)
+  .attr('y', -3)
   .attr('x', -(point_r + 3));
 
 // points on axis for groups
