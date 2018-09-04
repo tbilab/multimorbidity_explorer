@@ -1,4 +1,4 @@
-// Info banner for SNP name, MAF for current selection and the entire exome cohort. Along with link to click for genome browser location of SNP.
+// Info banner for SNP name, MAF for current selection and the entire cohort. Along with link to click for genome browser location of SNP.
 const {snp, maf_exome, maf_sel, gene, loc, chromosome} = data;
 
 const padding = 15;
@@ -73,24 +73,24 @@ svg.append('line')
       
   
 const maf_plot = svg.selectAll('#maf_plot')
-  .data([ {group: 'Exome Cohort', maf: maf_exome},
+  .data([ {group: 'Entire Cohort', maf: maf_exome},
           {group: 'Current Selection', maf: maf_sel} ])
   .enter().append('g')
-  .attr('transform', d => `translate(${x(d.maf)}, ${d.group == 'Exome Cohort' ? exome_height: selection_height} )`);
+  .attr('transform', d => `translate(${x(d.maf)}, ${d.group == 'Entire Cohort' ? exome_height: selection_height} )`);
 
 
 // group label text
 maf_plot.append('text')
   .text(d => d.group)
   .attr('class', 'labels')
-  .attr('alignment-baseline', d => d.group == 'Exome Cohort' ? 'hanging': 'baseline')
-  .attr('y',  d => d.group == 'Exome Cohort' ? 2: -3)
+  .attr('alignment-baseline', d => d.group == 'Entire Cohort' ? 'hanging': 'baseline')
+  .attr('y',  d => d.group == 'Entire Cohort' ? 2: -3)
   .attr('x', -(point_r + 3));
 
 // points on axis for groups
 maf_plot.append('circle')
   .attr('r', point_r)
-  .attr('fill', d => d.group == 'Exome Cohort' ? exome_color: sel_color);
+  .attr('fill', d => d.group == 'Entire Cohort' ? exome_color: sel_color);
   
 maf_plot.append('text')
   .text(d => toPercent(d.maf).replace('%',''))

@@ -52,6 +52,24 @@ checkGenomeFile <- function(genome){
 # genome %>% rename(anID = IID) %>% checkGenomeFile()
 # genome %>% mutate(rs13283456 = 3) %>% checkGenomeFile()
 
+makeTooltips <- function(phewas){
+  columns <- colnames(phewas)
+  
+  phewas <- phewas %>% 
+    mutate(tooltip = '')
+  
+  for(col in columns){
+    # print(col)
+    phewas <- phewas %>% 
+      mutate(
+        tooltip = paste0(
+          tooltip,
+          "<i> ", col, " </i>", rlang::UQ(rlang::sym(col)), "</br>"
+        )
+      )
+  }
+  phewas
+}
 
 checkPhewasFile <- function(phewas){
   columns <- colnames(phewas)
@@ -72,19 +90,20 @@ checkPhewasFile <- function(phewas){
   if(!has_tooltip){
     columns
     
-    phewas <- phewas %>% 
-      mutate(tooltip = '')
+    phewas <- phewas %>% makeTooltips()
     
-    for(col in columns){
-      print(col)
-      phewas <- phewas %>% 
-        mutate(
-          tooltip = paste0(
-            tooltip,
-            "<strong>", col, "</strong>", rlang::UQ(rlang::sym(col)), "<\br>"
-            )
-          )
-    }
+    #   mutate(tooltip = '')
+    # 
+    # for(col in columns){
+    #   print(col)
+    #   phewas <- phewas %>% 
+    #     mutate(
+    #       tooltip = paste0(
+    #         tooltip,
+    #         "<strong>", col, "</strong>", rlang::UQ(rlang::sym(col)), "<\br>"
+    #         )
+    #       )
+    # }
   }
   
   phewas

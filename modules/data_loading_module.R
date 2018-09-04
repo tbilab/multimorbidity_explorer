@@ -12,7 +12,8 @@ data_loading_UI <- function(id) {
           selectInput(
             ns("cachedDataset"), "Preloaded dataset:",
             c(
-              "rs13283456" = 'data/preloaded_rs13283456.rds'
+              "rs13283456" = 'data/preloaded_rs13283456.rds',
+              "rs3211783" = 'data/preloaded_rs3211783.rds'
             )
           ),
           actionButton(ns('preLoadedData'), 'Use preloaded data'),
