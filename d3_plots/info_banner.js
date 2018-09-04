@@ -1,5 +1,5 @@
 // Info banner for SNP name, MAF for current selection and the entire exome cohort. Along with link to click for genome browser location of SNP.
-const {snp, maf_exome, maf_sel, gene, chromosome} = data;
+const {snp, maf_exome, maf_sel, gene, loc, chromosome} = data;
 
 const padding = 15;
 const exome_color = 'steelblue';
@@ -41,7 +41,7 @@ snp_details.append('text')
   .on('click', () => {
     
     const db = 'hg19';
-    const link = `http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=${db}&position=${snp}`;
+    const link = `http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=${db}&position=ch${chromosome}:${snp}`;
     
     window.open(link, '_blank');
   });

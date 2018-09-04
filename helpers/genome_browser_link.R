@@ -12,6 +12,7 @@ getSNPInfo <- function(snp){
     gene = results$Gene, 
     major_allele = results$Major,
     minor_allele = results$Minor,
-    MAF = results$MAF
+    MAF = results$MAF,
+    loc = results$BP
   )
 }
