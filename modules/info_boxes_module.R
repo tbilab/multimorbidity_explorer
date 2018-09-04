@@ -18,7 +18,7 @@ info_boxes_UI <- function(id, app_ns) {
 info_boxes <- function(input, output, session, snp_name, individual_data, subset_data) {
   
   snp_info <- getSNPInfo(snp_name)
-  snp_info$snp <- snp
+  snp_info$snp <- snp_name
   snp_info$maf_exome <- mean(individual_data$snp)
   snp_info$maf_sel <- mean(subset_data$snp)
   

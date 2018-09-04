@@ -34,4 +34,5 @@
 
 .genome_browser_link {
   text-decoration: underline;
+  cursor: pointer;
 }

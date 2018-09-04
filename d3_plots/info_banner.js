@@ -37,7 +37,14 @@ snp_details.append('text')
   .html(`Genome Browser Link`)
   .attr('class', 'genome_browser_link')
   .attr('x', 10)
-  .attr('y', height - 10);
+  .attr('y', height - 10)
+  .on('click', () => {
+    
+    const db = 'hg19';
+    const link = `http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=${db}&position=${snp}`;
+    
+    window.open(link, '_blank');
+  });
   
 // MAF scale
 const x = d3.scaleLinear()
