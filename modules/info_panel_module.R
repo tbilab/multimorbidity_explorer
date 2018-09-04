@@ -1,6 +1,6 @@
 source(here('helpers/genome_browser_link.R'))
 
-info_boxes_UI <- function(id, app_ns) {
+info_panel_UI <- function(id, app_ns) {
   ns <- . %>% NS(id)() %>% app_ns()
   
   tagList(
@@ -15,7 +15,7 @@ info_boxes_UI <- function(id, app_ns) {
   )
 }
 
-info_boxes <- function(input, output, session, snp_name, individual_data, subset_data) {
+info_panel <- function(input, output, session, snp_name, individual_data, subset_data) {
   
   snp_info <- getSNPInfo(snp_name)
   snp_info$snp <- snp_name
