@@ -24,7 +24,6 @@ ui <- shinyUI(
     ),
     dashboardBody(
       includeCSS(here("www/custom.css")),
-      shinyjs::useShinyjs(debug = TRUE),
       main_app_UI('main_app')
     ),
     skin = 'black'

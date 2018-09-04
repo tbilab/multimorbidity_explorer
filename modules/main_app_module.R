@@ -2,7 +2,7 @@ source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ON
 source(here('helpers/helpers.R'))
 source(here('helpers/code_filtering.R'))
 source(here('modules/upset_interactive.R'))
-source(here('modules/info_boxes_module.R'))
+source(here('modules/info_panel_module.R'))
 source(here('modules/network_plots_module.R'))
 source(here('modules/phewas_plot_table_module.R'))
 
@@ -26,7 +26,7 @@ main_app_UI <- function(id) {
     ),
     column(
       width = 7,
-      info_boxes_UI('info_boxes', ns),
+      info_panel_UI('info_panel', ns),
       network_plots_UI('network_plots', ns)
     ))
   )
@@ -141,6 +141,6 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
                                      minSize = minSize )
     
     # While we're at it, send data to the info boxes
-    callModule(info_boxes, 'info_boxes', snp_name, individual_data, app_data$subset_data)
+    callModule(info_panel, 'info_panel', snp_name, individual_data, app_data$subset_data)
   })
 }

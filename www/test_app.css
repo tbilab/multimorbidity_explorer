@@ -49,6 +49,7 @@
   margin-top: -10px;
 }
 
+/*
 svg text {
   pointer-events: none;
   -webkit-user-select: none;
@@ -56,6 +57,7 @@ svg text {
   -ms-user-select: none;
   user-select: none;
 }
+*/
 
 .checkbox {
   margin-top: 0;

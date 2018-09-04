@@ -1,0 +1,38 @@
+.maf_points {
+  fill: white;
+  alignment-baseline: middle;
+  text-anchor: middle;
+  font-size: 16px;
+}
+
+.labels {
+  text-anchor: end;
+  font-size: 20px;
+}
+
+.snp_name {
+  alignment-baseline: hanging;
+  text-anchor: start;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.axis_line {
+  stroke: black;
+  opacity: 0.2;
+  stroke-width: 2px;
+}
+
+#snp_details text {
+  font-size: 18px;
+}
+
+.snp_info {
+  font-weight: bold;
+}
+
+
+.genome_browser_link {
+  text-decoration: underline;
+  cursor: pointer;
+}

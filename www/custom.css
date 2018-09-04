@@ -49,12 +49,20 @@
   margin-top: -10px;
 }
 
+
 svg text {
   pointer-events: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+svg text.genome_browser_link{
+  pointer-events: all; 
+  -webkit-user-select: all;
+  -moz-user-select:    all;
+  -ms-user-select:     all;
 }
 
 .checkbox {
@@ -96,4 +104,9 @@ svg text {
 #table_selection {
   padding-top: 8px;
   text-align: right;
+}
+
+#info_banner .box-header {
+  height: 0px;
+  padding: 5px;
 }
