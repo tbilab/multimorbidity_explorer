@@ -7,7 +7,7 @@
 }
 
 svg text{
-  pointer-events: none;
+  /*pointer-events: none;*/
   fill: #4d4d4d;
 }
 

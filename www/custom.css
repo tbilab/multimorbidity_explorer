@@ -49,7 +49,7 @@
   margin-top: -10px;
 }
 
-/*
+
 svg text {
   pointer-events: none;
   -webkit-user-select: none;
@@ -57,7 +57,13 @@ svg text {
   -ms-user-select: none;
   user-select: none;
 }
-*/
+
+svg text.genome_browser_link{
+  pointer-events: all; 
+  -webkit-user-select: all;
+  -moz-user-select:    all;
+  -ms-user-select:     all;
+}
 
 .checkbox {
   margin-top: 0;
