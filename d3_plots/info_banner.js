@@ -14,6 +14,9 @@ const max_freq = Math.max(maf_exome, maf_sel)*1.1;
 // turns proportion into a rounded percentange
 const toPercent = d3.format(".1%");
 
+// clear any old stuff left from previou visualization.
+svg.html(''); 
+
 // draw the snp name in the upper left corner
 svg.append('text')
   .text(snp)
