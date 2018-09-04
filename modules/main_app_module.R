@@ -26,7 +26,7 @@ main_app_UI <- function(id) {
     ),
     column(
       width = 7,
-      info_panel_UI('info_boxes', ns),
+      info_panel_UI('info_panel', ns),
       network_plots_UI('network_plots', ns)
     ))
   )
