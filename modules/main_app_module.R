@@ -11,24 +11,18 @@ main_app_UI <- function(id) {
   ns <- NS(id)
   tagList(
     tags$head( tags$link(rel = "stylesheet", type = "text/css", href = "custom.css") ),
-    fluidRow(column(
-      width = 5,
-      phewas_plot_table_UI('phewas_plot_table', ns),
-      box(
-        title = "Comorbidity Patterns",
-        width = NULL,
-        solidHeader=TRUE,          
-        collapsible = TRUE,
-        div(id = 'upset2',
-            upset2_UI(ns('upsetPlotV2'))
-        )
+    fluidRow(
+      column(
+        width = 5,
+        phewas_plot_table_UI('phewas_plot_table', ns),
+        upset2_UI('upsetPlotV2', ns)
+      ),
+      column(
+        width = 7,
+        info_panel_UI('info_panel', ns),
+        network_plots_UI('network_plots', ns)
       )
-    ),
-    column(
-      width = 7,
-      info_panel_UI('info_panel', ns),
-      network_plots_UI('network_plots', ns)
-    ))
+    )
   )
 }
 

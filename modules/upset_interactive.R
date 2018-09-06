@@ -1,10 +1,18 @@
 source(here('helpers/upset_helpers.R'))
 
-upset2_UI <- function(id) {
-  ns <- NS(id)
+upset2_UI <- function(id, app_ns = I) {
+  ns <- . %>% NS(id)() %>% app_ns()
   
   tagList(
-    d3Output(ns('chart'), height = '100%')
+    box(
+      title = "Comorbidity Patterns",
+      width = NULL,
+      solidHeader=TRUE,          
+      collapsible = TRUE,
+      div(id = 'upset2',
+          d3Output(ns('chart'), height = '100%')
+      )
+    )
   )
 }
 

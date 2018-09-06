@@ -1,6 +1,7 @@
 # loads all the libraries needed for the app. 
 library(shiny)
 library(shinydashboard)
+library(shinydashboardPlus)
 library(tidyverse)
 library(here)
 library(magrittr)
@@ -11,3 +12,4 @@ library(network3d)
 library(DT)
 library(shinyjs)
 library(rsnps)
+# devtools::install_github("DivadNojnarg/shinydashboardPlus")
