@@ -14,7 +14,7 @@
 } 
 
 #upset2 {
-  height: calc(60vh - 130px) !important;
+  height: calc(60vh - 180px) !important;
 }
 
 /*
@@ -109,4 +109,31 @@ svg text.genome_browser_link{
 #info_banner .box-header {
   height: 0px;
   padding: 5px;
+}
+
+/* This is to disable the flipping upset card's header image. */
+.card-background-1 {
+  display: none;
+}
+
+
+
+img.avatar {
+  display: none;
+}
+
+h3.card-title{
+  text-align: left;
+  padding-left: 10px;  
+  padding-top: 10px;
+  font-size: 18px;
+}
+
+.card-back-1 .card-block {
+  padding-left: 15px;
+}
+
+.card-front-1 .card-block {
+  text-align: right;
+  padding-right: 10px;
 }

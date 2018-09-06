@@ -12,7 +12,7 @@ upsetData <- here('data/upset_data.rds') %>%
 
 codeData <- upsetData$codeData
 snpData <- upsetData$snpData
-minSize <- 20
+# minSize <- 20
 
 currentSnp <- 'rs5908'
 
@@ -23,13 +23,7 @@ ui <- shinyUI(
       title = "Multimorbidity Explorer",
       titleWidth = 300
     ),
-    dashboardSidebar(
-      h2('Settings'),
-      sliderInput("setSize", "Min Size of Set:",
-                  min = 0, max = 250,
-                  value = 20),
-      collapsed = TRUE
-    ),
+    dashboardSidebar(disable = TRUE),
     dashboardBody(
       includeCSS(here("www/custom.css")),
       upset2_UI('upsetPlotV2')
@@ -43,8 +37,7 @@ server <- function(input, output, session) {
   observe({
     callModule(upset2, 'upsetPlotV2',
                codeData = codeData,
-               snpData = snpData,
-               minSize = minSize )
+               snpData = snpData)
   })
   
 }
