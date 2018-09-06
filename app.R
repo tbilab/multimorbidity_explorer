@@ -8,13 +8,7 @@ ui <- shinyUI(
       title = "Multimorbidity Explorer",
       titleWidth = 300
     ),
-    dashboardSidebar(
-      h2('Settings'),
-      sliderInput("setSize", "Min Size of Set:",
-                  min = 0, max = 250,
-                  value = 20),
-      collapsed = TRUE
-    ),
+    dashboardSidebar(disable = TRUE),
     dashboardBody(
       includeCSS(here("www/custom.css")),
       shinyjs::useShinyjs(debug = TRUE),
@@ -25,8 +19,6 @@ ui <- shinyUI(
 )
 
 server <- function(input, output, session) {
-  
-  set_size_slider <- reactive({input$setSize})
   
   loaded_data <- callModule(
     data_loading, "data_loading"
@@ -48,8 +40,7 @@ server <- function(input, output, session) {
       individual_data = all_data$individual_data,
       results_data = all_data$phewas_data,
       snp_name = all_data$snp_name,
-      category_colors = all_data$category_colors,
-      set_size_slider = set_size_slider
+      category_colors = all_data$category_colors
     )
   })
 }

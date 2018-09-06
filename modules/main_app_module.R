@@ -26,7 +26,7 @@ main_app_UI <- function(id) {
   )
 }
 
-main_app <- function(input, output, session, individual_data, results_data, snp_name, category_colors, set_size_slider) {
+main_app <- function(input, output, session, individual_data, results_data, snp_name, category_colors) {
 
   #----------------------------------------------------------------
   # Reactive Values based upon user input
@@ -121,18 +121,11 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   # Upset plot of comorbidity patterns
   #----------------------------------------------------------------
   observe({
-    req(app_data$subset_data, set_size_slider())
-    setSize <- set_size_slider()
-
-    minSize <- ifelse(app_data$snp_filter, 1, setSize)
-
-    codeData <- app_data$subset_data %>%
-      mutate(snp = ifelse(snp != 0, 1, 0))
+    req(app_data$subset_data)
 
     output$upsetPlotV2 <- callModule(upset2, 'upsetPlotV2',
-                                     codeData = codeData,
-                                     snpData = individual_data,
-                                     minSize = minSize )
+                                     codeData = app_data$subset_data %>% mutate(snp = ifelse(snp != 0, 1, 0)),
+                                     snpData = individual_data)
     
     # While we're at it, send data to the info boxes
     callModule(info_panel, 'info_panel', snp_name, individual_data, app_data$subset_data)
