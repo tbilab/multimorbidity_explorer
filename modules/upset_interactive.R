@@ -4,21 +4,21 @@ upset2_UI <- function(id, app_ns = I) {
   ns <- . %>% NS(id)() %>% app_ns()
   
   tagList(
-    flipBox(
-      front_title = "Comorbidity Patterns",
-      back_title = "Plot Settings",
+    boxPlus(
+      title = "Comorbidity Patterns",
       width = NULL,
       id = 1,
-      div(id = 'upset2',
-          d3Output(ns('chart'), height = '100%')
-      ),
-      back_content = tagList(
+      solidHeader=TRUE,
+      enable_dropdown = TRUE,
+      dropdown_icon = "wrench",
+      dropdown_menu = dropdownItemList(
         sliderInput(ns("setSize"), "Min Size of Set:",
                     min = 0, max = 250,
                     value = 20)
       ),
-      front_btn_text = 'Settings',
-      back_btn_text = 'Return to plot'
+      div(id = 'upset2',
+          d3Output(ns('chart'), height = '100%')
+      )
     )
   )
 }

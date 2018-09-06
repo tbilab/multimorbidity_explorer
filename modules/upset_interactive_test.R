@@ -12,7 +12,6 @@ upsetData <- here('data/upset_data.rds') %>%
 
 codeData <- upsetData$codeData
 snpData <- upsetData$snpData
-# minSize <- 20
 
 currentSnp <- 'rs5908'
 
