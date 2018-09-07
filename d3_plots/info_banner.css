@@ -36,3 +36,9 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+#maf_axis_label {
+  text-anchor: middle;
+  font-size: 14px;
+  fill: #5c5b5b;
+}

@@ -62,6 +62,13 @@ svg.append("g")
     .tickSizeOuter(0)
   );
   
+// add label for MAF
+svg.append("text")    
+  .attr('id', 'maf_axis_label')
+  .attr("transform", `translate(${maf_chart_start + (width - maf_chart_start)/2},${exome_height + 35})`)
+  .text("Minor Allele Frequency (MAF)");
+
+  
 svg.append('line')
   .attr('x1', x(0))
   .attr('x2', x(max_freq))
