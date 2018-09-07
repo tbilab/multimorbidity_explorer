@@ -45,7 +45,7 @@ __Data Entry/ Landing Page__
 ![](https://github.com/tbilab/multimorbidity_explorer/raw/master/screenshots/data_loading.png)
 
 __Main App/ Dashboard__
-![](https://github.com/tbilab/multimorbidity_explorer/raw/master/screenshots/main_app.png)
+![](https://raw.githubusercontent.com/tbilab/multimorbidity_explorer/master/screenshots/main_app_new.png)
 
 
 
