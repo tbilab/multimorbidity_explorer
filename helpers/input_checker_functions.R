@@ -88,22 +88,7 @@ checkPhewasFile <- function(phewas){
   has_tooltip <- 'tooltip' %in% columns
   
   if(!has_tooltip){
-    columns
-    
     phewas <- phewas %>% makeTooltips()
-    
-    #   mutate(tooltip = '')
-    # 
-    # for(col in columns){
-    #   print(col)
-    #   phewas <- phewas %>% 
-    #     mutate(
-    #       tooltip = paste0(
-    #         tooltip,
-    #         "<strong>", col, "</strong>", rlang::UQ(rlang::sym(col)), "<\br>"
-    #         )
-    #       )
-    # }
   }
   
   phewas

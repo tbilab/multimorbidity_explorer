@@ -96,7 +96,8 @@ phewas_plot_table <- function(
   output$selected_codes_list <- renderDataTable({
     included_codes %>%
       arrange(p_val) %>%
-      select(code, `P-Value` = p_val, class = category) %>%
+      select(-tooltip) %>% # dont want to spam the table with raw html
+      rename(`P-Value` = p_val) %>% 
       datatable(
         options = list(
           scrollY = 200,
