@@ -74,3 +74,23 @@ __ID to phenome file__: A mapping between an individuals ID and present phenotyp
 
 - `IID`: Unique identifying character ID for each individual (matches same column in __ID to SNP file__.)
 - `code`: Unique identifying character ID for a given phenotype. This should match the column of the same name in __Phewas results file__.
+
+## Preloading data into the app
+
+If you want to use preloaded data instead of manually inputting the files, you can place it into a folder `data/preloaded`. 
+
+The format of the spreadsheets is the same as you would provide for the manual data entry. The snp specific files (id_to_snp.csv and phewas_results.csv) will go in a folder with the name of whatever snp you are working with (e.g. `rs123456/`). Since the phenome spreadsheet doesn't change it is placed just at `data/preloaded/id_to_code.csv` so it can be shared across the snps you have.  The file structure should look like this: 
+
+```
+# path = data/preloaded
+id_to_code.csv
+rs123456/
+  id_to_snp.csv
+  phewas_results.csv
+rs7891011/
+  id_to_snp.csv
+  phewas_results.csv
+...
+```
+
+The app will automatically detect the present snps and list them in a dropdown for you. 
