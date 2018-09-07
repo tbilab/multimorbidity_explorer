@@ -1,4 +1,5 @@
 source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
+source(here('helpers/helpers.R')) # everything defined here is IN UPPERCASE ONLY
 source(here('helpers/input_checker_functions.R'))
 
 options(shiny.maxRequestSize=30*1024^2) # increase size of files we can take uploaded to 30 megs.
@@ -9,13 +10,7 @@ data_loading_UI <- function(id) {
     fluidPage(
       sidebarLayout(
         sidebarPanel(
-          selectInput(
-            ns("cachedDataset"), "Preloaded dataset:",
-            c(
-              "rs13283456" = 'data/preloaded_rs13283456.rds',
-              "rs3211783" = 'data/preloaded_rs3211783.rds'
-            )
-          ),
+          uiOutput(ns('preloaded_snps')),
           actionButton(ns('preLoadedData'), 'Use preloaded data'),
           hr(),
           h3('Load your data'),
@@ -57,6 +52,15 @@ data_loading <- function(input, output, session) {
     category_colors = NULL,      # Object containing color coading info for plots
     snp_name = NULL              # Name of the current snp being looked at. 
   )
+  
+  # find all the snps we have preloaded
+  preloaded_snps <- list.files(here('data/preloaded'), pattern = 'rs') 
+  
+  output$preloaded_snps <- renderUI({
+    selectInput(session$ns("dataset_selection"), "Select a pre-loaded dataset:",
+                preloaded_snps
+    )
+  })
 
   observeEvent(input$genome, {
     
@@ -66,7 +70,6 @@ data_loading <- function(input, output, session) {
       
       app_data$snp_name <- good_genome_file$snp_name
       app_data$genome_raw <- good_genome_file$data
-      
     },
     error = function(message){
       print(message)
@@ -116,13 +119,13 @@ data_loading <- function(input, output, session) {
   # Data Loading Logic
   #----------------------------------------------------------------
   # Watches for all files to be loaded and then triggers.
-  observeEvent({input$phewas; input$genome; input$phenome},{
+  observe({
     req(app_data$phewas_raw, app_data$genome_raw, app_data$phenome_raw)
     
     withProgress(message = 'Loading data', value = 0, {
       # read files into R's memory
       incProgress(1/4, detail = "Reading in uploaded files")
-      
+
       phenome <- app_data$phenome_raw
       genome  <- app_data$genome_raw
       phewas  <- app_data$phewas_raw
@@ -165,24 +168,17 @@ data_loading <- function(input, output, session) {
   })
   
   observeEvent(input$preLoadedData,{
-    print('running preloaded data button function')
-    selected_file <- input$cachedDataset
+    base_dir <- glue('data/preloaded/{input$dataset_selection}') %>% here()
+   
+    app_data$phewas_raw <- glue('{base_dir}/phewas_results.csv') %>% read_csv()
+    app_data$phenome_raw <-  here('data/preloaded/id_to_code.csv') %>% read_csv()
     
-    withProgress(message = 'Loading cached data', value = 0, {
-      
-      incProgress(1/3, detail = "Reading cached file to memory")
-      cached_data <- read_rds(here::here(selected_file))
-      
-      incProgress(2/3, detail = "Loading data into application state")
-      app_data$individual_data <- cached_data$individual_data 
-      app_data$category_colors <- cached_data$category_colors 
-      app_data$phewas_data <- cached_data$phewas_data 
-      app_data$snp_name <- cached_data$snp_name 
-      
-      incProgress(3/3, detail = "Starting app")
-      
-      app_data$data_loaded <- TRUE
-    }) # end progress
+    
+    genome_file <- glue('{base_dir}/id_to_snp.csv') %>% 
+      read_csv() %>% 
+      checkGenomeFile()  
+    app_data$snp_name <- genome_file$snp_name
+    app_data$genome_raw <- genome_file$data
   })
   
   return(

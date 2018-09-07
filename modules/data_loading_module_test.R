@@ -1,9 +1,5 @@
 # testing main app module in own shiny app.
-library(shiny)
-library(shinydashboard)
-library(tidyverse)
-library(here)
-
+source(here::here('helpers/load_libraries.R'))
 source(here('modules/data_loading_module.R'))
 
 
