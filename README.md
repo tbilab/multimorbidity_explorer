@@ -30,7 +30,8 @@ cran_packages <- c(
 install.packages(cran_packages)
 
 github_packages <- c(
-  'nstrayer/network3d'
+  'nstrayer/network3d',
+  'DivadNojnarg/shinydashboardPlus'
 )
 devtools::install_github(github_packages)
 ```
