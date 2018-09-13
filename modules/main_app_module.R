@@ -66,7 +66,6 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
 
   # reset the inverted codes if the user flips all cases back on.
   observeEvent(app_data$snp_filter, {
-    print('observed the snp filter input. ')
     app_data$inverted_codes <- c()
   })
 
@@ -90,7 +89,6 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     )
     
     observeEvent(manhattan_plot(), {
-      print('code filtering from the manhattan plot and table!')
       app_data$included_codes <- manhattan_plot()
     })
   })
