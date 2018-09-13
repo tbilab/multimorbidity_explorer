@@ -34,7 +34,8 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   app_data <- reactiveValues( 
     included_codes = NULL,
     inverted_codes = c(),
-    snp_filter = FALSE          # start with all individuals regardless of snp status. 
+    snp_filter = FALSE,       # start with all individuals regardless of snp status. 
+    maf_subset = FALSE        # MAF for patients with current subset of codes. 
   )
   
   # deals with code selection. On startup this is passed null codes and thus selects the top based
@@ -49,12 +50,18 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
 
   # Take individual level data and subset it to what we want to show.
   observe({
-    app_data$subset_data <- individual_data %>%
-      filter((snp %in% c(1,2)) | !(app_data$snp_filter)) %>%
+
+    subseted_to_codes <- individual_data %>% 
       subsetToCodes(
         desiredCodes = app_data$included_codes$code,
         codes_to_invert = app_data$inverted_codes
       )
+    
+    app_data$maf_subset <- mean(subseted_to_codes$snp > 0)
+    
+    app_data$subset_data <- subseted_to_codes %>%
+      filter((snp %in% c(1,2)) | !(app_data$snp_filter)) 
+
   })
 
   # reset the inverted codes if the user flips all cases back on.
@@ -128,6 +135,6 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
                                      snpData = individual_data)
     
     # While we're at it, send data to the info boxes
-    callModule(info_panel, 'info_panel', snp_name, individual_data, app_data$subset_data)
+    callModule(info_panel, 'info_panel', snp_name, individual_data, app_data$maf_subset )
   })
 }

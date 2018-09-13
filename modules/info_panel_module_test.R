@@ -5,7 +5,7 @@ cached_data <- read_rds(here('data/infoboxes_data.rds'))
 
 snp_name <- cached_data$snp_name
 individual_data <- cached_data$individual_data
-subset_data <- cached_data$subset_data
+subset_maf <- 0.4
 
 
 ui <- shinyUI(
@@ -30,7 +30,7 @@ ui <- shinyUI(
 )
 
 server <- function(input, output, session) {
-  callModule(info_panel, 'info_panel', snp_name, individual_data, subset_data)
+  callModule(info_panel, 'info_panel', snp_name, individual_data, subset_maf)
 }
 
 shinyApp(ui, server)
