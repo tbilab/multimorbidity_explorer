@@ -9,7 +9,7 @@ const label_gap= 35;
 const point_r = 20;
 const selection_height = height/2 - (point_r*1.1);
 const exome_height =     height/2 + (point_r*1.1);
-const max_freq = Math.max(maf_exome, maf_sel)*1.1;
+const max_freq = Math.min(1, Math.max(maf_exome, maf_sel)*1.1);
 
 // turns proportion into a rounded percentange
 const toPercent = d3.format(".1%");
@@ -52,7 +52,7 @@ snp_details.append('text')
 // MAF scale
 const x = d3.scaleLinear()
   .domain([0,max_freq])
-  .range([maf_chart_start, width - padding]);
+  .range([maf_chart_start, width - padding*1.5]);
 
 svg.append("g")
   .attr("transform", `translate(0,${exome_height})`)

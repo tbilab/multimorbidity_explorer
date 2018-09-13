@@ -19,8 +19,8 @@ info_panel <- function(input, output, session, snp_name, individual_data, subset
   
   snp_info <- getSNPInfo(snp_name)
   snp_info$snp <- snp_name
-  snp_info$maf_exome <- mean(individual_data$snp)
-  snp_info$maf_sel <- mean(subset_data$snp)
+  snp_info$maf_exome <- mean(individual_data$snp > 0)
+  snp_info$maf_sel <- mean(subset_data$snp > 0)
   
   output$info_banner <- r2d3::renderD3({
     r2d3::r2d3(
