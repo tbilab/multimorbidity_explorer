@@ -1,10 +1,6 @@
 # This doesn't work in its current form and needs to be modified to work with the data available in the upset folder within d3 plots.
 
-library(shiny)
-library(tidyverse)
-library(here)
-library(r2d3)
-
+source(here::here('helpers/load_libraries.R'))
 source(here('modules/upset_interactive.R'))
 
 upsetData <- here('data/upset_data.rds') %>% 
@@ -25,6 +21,11 @@ ui <- shinyUI(
     dashboardSidebar(disable = TRUE),
     dashboardBody(
       includeCSS(here("www/custom.css")),
+      checkboxInput(
+        "snp_filter", 
+        label = "Just minor-allele carriers", 
+        value = FALSE
+      ),
       upset2_UI('upsetPlotV2')
     ),
     skin = 'black'
@@ -34,8 +35,18 @@ ui <- shinyUI(
 
 server <- function(input, output, session) {
   observe({
+    
+    
+    codeFiltered <- codeData %>% {
+      this <- .
+      
+      if(input$snp_filter) this <- this %>% filter(snp > 0)
+      
+      this
+    }
+    
     callModule(upset2, 'upsetPlotV2',
-               codeData = codeData,
+               codeData = codeFiltered,
                snpData = snpData)
   })
   

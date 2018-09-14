@@ -55,13 +55,10 @@ upset2 <- function(input, output, session, codeData, snpData, currentSnp) {
         Total = n(),
         PropMa = MaCarriers/Total
       ) %>% {
-        
-        # browser()
-        # testResults <- binom.test(x = .$MaCarriers[2], n = .$Total[2], p = .$PropMa[1])
+
         RR_results <- calc_RR_CI(.$Total[2], .$MaCarriers[2], .$Total[1], .$MaCarriers[1])
         
         data_frame(
-          # pVal = testResults$p.value,
           pointEst = RR_results$PE,
           lower = RR_results$lower,
           upper = RR_results$upper
@@ -103,8 +100,8 @@ upset2 <- function(input, output, session, codeData, snpData, currentSnp) {
       jsonlite::toJSON()
     
     # Writes files for live development. 
-    # write_rds(setData, here('upset_interactive/setData.rds'))
-    # write_rds(list(marginalData = marginalData, overallMaRate = overallMaRate), here('upset_interactive/optionsData.rds'))
+    write_rds(setData, here('data/upset_data/setData.rds'))
+    write_rds(list(marginalData = marginalData, overallMaRate = overallMaRate), here('data/upset_data/optionsData.rds'))
     
     setData %>% 
       r2d3(
