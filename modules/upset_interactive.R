@@ -100,8 +100,8 @@ upset2 <- function(input, output, session, codeData, snpData, currentSnp) {
       jsonlite::toJSON()
     
     # Writes files for live development. 
-    write_rds(setData, here('data/upset_data/setData.rds'))
-    write_rds(list(marginalData = marginalData, overallMaRate = overallMaRate), here('data/upset_data/optionsData.rds'))
+    write_rds(setData, here('data/upset_data/setData_all.rds'))
+    write_rds(list(marginalData = marginalData, overallMaRate = overallMaRate), here('data/upset_data/optionsData_all.rds'))
     
     setData %>% 
       r2d3(

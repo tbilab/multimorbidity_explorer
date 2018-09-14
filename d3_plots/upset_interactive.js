@@ -16,9 +16,9 @@ const highlightColor = '#fdcdac'; // Color of the highlight bars
 const margin = {right: 20, left: 10, top: 20, bottom: 50}; // margins on side of chart
 
 // layout grid
-const proportionPlotUnits = 3; // width of proportion CIs
-const matrixPlotUnits = 2;
-const countBarUnits = 3;
+const proportionPlotUnits = just_snp ? 0.5: 3; // width of proportion CIs
+const matrixPlotUnits = just_snp ? 2.5 : 2;
+const countBarUnits = just_snp ? 3.5: 3;
 const marginalChartRatio = 1/3;  // what proportion of vertical space is the code marginal count bars?
 
 // matrix settings
@@ -319,7 +319,7 @@ if(!just_snp){
       y: h - marginalChartHeight+ 20,
     })
     .classed('axisTitles', true)
-    .text('MA Relative Risk')
+    .text('Relative Risk')
   
   // Add a line to show overall snp proportions
   proportionAxis.append('line')
