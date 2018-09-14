@@ -5,7 +5,7 @@ upset2_UI <- function(id, app_ns = I) {
   
   tagList(
     boxPlus(
-      title = "Comorbidity Patterns",
+      title = "Multimorbidity Patterns",
       width = NULL,
       id = 1,
       collapsible = TRUE, 
