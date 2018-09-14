@@ -1,6 +1,10 @@
-// !preview r2d3 data=setData, options = optionsList, dependencies = "d3-jetpack", css='upset_interactive/upset.css'
+// !preview r2d3 data=setData, options = optionsData, dependencies = "d3-jetpack", css='upset_interactive/upset.css'
 // r2d3: https://rstudio.github.io/r2d3
 //
+
+// Check if we are looking at a just snp version of the plot record it so we can draw accordingly later. 
+const num_snp_eq_total = data.map(d => +(d.count === d.num_snp)).reduce((running, cur) => running + cur);
+const just_snp = num_snp_eq_total === data.length;
 
 // number formatters
 const countFormat = d3.format(",d");
@@ -49,8 +53,6 @@ const matrixDotSize = Math.min(
   matrixSize
 );
 
- 
-
 // empty old svg content
 svg.html('');
 
@@ -74,7 +76,6 @@ const codeList = Object.keys(
 // ----------------------------------------------------------------------
 // Scales
 // ----------------------------------------------------------------------
-
 const matrixWidthScale = d3.scaleBand()
   .domain(codeList)
   .range([matrixPadding,matrixPlotWidth - matrixPadding])
@@ -107,9 +108,8 @@ const marginalY = d3.scaleLinear()
 // ----------------------------------------------------------------------
 // Chart Components
 // ----------------------------------------------------------------------
-
 const matrixChart = padded.append('g.matrixChart')
-  .translate([proportionPlotWidth,0]);
+  .translate([countBarWidth,0]);
   
 matrixChart.selectAll('.currentRow')
   .data(data)
@@ -179,20 +179,22 @@ matrixChart.selectAll('.currentRow')
       
       
     // Proportion Intervals
-    const proportionBar = d3.select(this).append('g.proportionBar')
-      .translate([matrixPlotWidth, 0]);
+    
+    if(!just_snp){
+      const proportionLine = d3.select(this).append('g.proportionLine')
+        .translate([matrixPlotWidth, 0]);
       
-    const intervalBar = proportionBar
-      .append('line')
-      .at({
-        x1: proportionX(currentEntry.lower),
-        x2: proportionX(currentEntry.upper),
-        y1: verticalSpace/2, y2: verticalSpace/2,
-        stroke: currentEntry.pointEst === 0 ? 'darkgrey': 'orangered',
-        strokeWidth: ciThickness,
-      });
+      const intervalBar = proportionLine
+        .append('line')
+        .at({
+          x1: proportionX(currentEntry.lower),
+          x2: proportionX(currentEntry.upper),
+          y1: verticalSpace/2, y2: verticalSpace/2,
+          stroke: currentEntry.pointEst === 0 ? 'darkgrey': 'orangered',
+          strokeWidth: ciThickness,
+        });
       
-    const pointEst = proportionBar
+    const pointEst = proportionLine
       .append('circle')
       .at({
         cx: proportionX(currentEntry.pointEst),
@@ -203,7 +205,7 @@ matrixChart.selectAll('.currentRow')
         strokeWidth: 0.5,
       });
  
-    proportionBar
+    proportionLine
       .append('text')
       .html(d => `<tspan>Relative Risk:</tspan> ${pValFormat(currentEntry.pointEst)}`)
       .at({
@@ -215,7 +217,7 @@ matrixChart.selectAll('.currentRow')
         'class': 'hoverInfo'
       });
       
-    proportionBar
+    proportionLine
       .append('text')
       .html(d => `<tspan>CI:</tspan> (${CiFormat(currentEntry.lower)},${CiFormat(currentEntry.upper)})`)
       .at({
@@ -226,6 +228,8 @@ matrixChart.selectAll('.currentRow')
         textAnchor: 'start',
         'class': 'hoverInfo'
       });
+    }
+    
       
     // Count Bars
     const countBar = d3.select(this).append('g.countBar')
@@ -289,42 +293,46 @@ matrixAxis
     
 matrixAxis.select('.domain').remove()
 
-const proportionAxis = padded.append('g.proportionAxis')
-  .translate([matrixPlotWidth + countBarWidth, marginalChartHeight - marginalBottomPadding])
 
-proportionAxis.append("g")
-  .call(d3.axisTop().scale(proportionX).ticks(5))
-  .selectAll("text")
-  .at({
-    textAnchor: 'start',
-    x: 2,
-    y: -5,
-    opacity: 0.5,
-  });
-
-proportionAxis.select('.tick').select('line')
-  .at({
-    y1: h-marginalChartHeight
-  });
+if(!just_snp){
+  const proportionAxis = padded.append('g.proportionAxis')
+    .translate([matrixPlotWidth + countBarWidth, marginalChartHeight - marginalBottomPadding])
   
-proportionAxis.append('text')
-  .at({
-    x: proportionPlotWidth/2,
-    y: h - marginalChartHeight+ 20,
-  })
-  .classed('axisTitles', true)
-  .text('MA Relative Risk')
-
-// Add a line to show overall snp proportions
-proportionAxis.append('line')
-  .at({
-    x1: proportionX(1),
-    x2: proportionX(1), 
-    y1: 0,
-    y2: h - marginalChartHeight,
-    stroke: 'black',
-    opacity: 0.8,
-  })
+  proportionAxis.append("g")
+    .call(d3.axisTop().scale(proportionX).ticks(5))
+    .selectAll("text")
+    .at({
+      textAnchor: 'start',
+      x: 2,
+      y: -5,
+      opacity: 0.5,
+    });
+  
+  proportionAxis.select('.tick').select('line')
+    .at({
+      y1: h-marginalChartHeight
+    });
+    
+  proportionAxis.append('text')
+    .at({
+      x: proportionPlotWidth/2,
+      y: h - marginalChartHeight+ 20,
+    })
+    .classed('axisTitles', true)
+    .text('MA Relative Risk')
+  
+  // Add a line to show overall snp proportions
+  proportionAxis.append('line')
+    .at({
+      x1: proportionX(1),
+      x2: proportionX(1), 
+      y1: 0,
+      y2: h - marginalChartHeight,
+      stroke: 'black',
+      opacity: 0.8,
+    })
+  
+}
 
 
 const countAxis = padded.append('g.countAxis')
@@ -354,7 +362,7 @@ countAxis.append('text')
 
 
 const marginalCountAxis = padded.append("g")
-  .translate([proportionPlotWidth,0])
+  .translate([countBarWidth,0])
   .call(d3.axisLeft().scale(marginalY).ticks(4).tickSizeOuter(0));
 
 marginalCountAxis.selectAll("text")
@@ -367,7 +375,7 @@ marginalCountAxis.select('text').remove() // hides the first zero so we can doub
 // Marginal bars. 
 // ----------------------------------------------------------------------
 const marginalCountsChart = padded.append('g.marginalCountsChart')
-  .translate([proportionPlotWidth,0]);
+  .translate([countBarWidth,0]);
 
 const marginalBars = marginalCountsChart.selectAll('.marginalCounts')
   .data(options.marginalData)
