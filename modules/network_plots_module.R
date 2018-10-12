@@ -10,7 +10,7 @@ network_plots_UI <- function(id, app_ns) {
   
   tagList(
     box(
-      title = "Individual-Level Bipartite Network",
+      title = "Phenotype-Subject Bipartite Network",
       solidHeader=TRUE,          
       width = NULL,
       height = "20%",
@@ -31,7 +31,7 @@ network_plots_UI <- function(id, app_ns) {
       )
     ),
     tabBox(id = 'network_plot_box',
-           title = "Phenotype Network",
+           title = "",
            width = NULL,
            tabPanel(
              "2D",
@@ -72,6 +72,10 @@ network_plots <- function(
       one_copy = ONE_SNP_COPY_COLOR,
       two_copies = TWO_SNP_COPIES_COLOR
     )
+  
+  write_rds(network_data, here('data/testing_network_data_snp_filter.rds'))
+  
+  # browser()
   
   # send data and options to the 2d plot
   output$networkPlot2d <- r2d3::renderD3({

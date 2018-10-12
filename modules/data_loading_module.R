@@ -1,5 +1,6 @@
 source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
-source(here('helpers/helpers.R')) # everything defined here is IN UPPERCASE ONLY
+source(here('helpers/helpers.R')) 
+source(here('helpers/merge_phenome_genome.R')) 
 source(here('helpers/input_checker_functions.R'))
 
 options(shiny.maxRequestSize=30*1024^2) # increase size of files we can take uploaded to 30 megs.
@@ -124,24 +125,16 @@ data_loading <- function(input, output, session) {
     
     withProgress(message = 'Loading data', value = 0, {
       # read files into R's memory
-      incProgress(1/4, detail = "Reading in uploaded files")
+      incProgress(1/3, detail = "Reading in uploaded files")
 
       phenome <- app_data$phenome_raw
       genome  <- app_data$genome_raw
       phewas  <- app_data$phewas_raw
       
       # first spread the phenome data to a wide format
-      incProgress(2/4, detail = "Processing phenome data")
-      individual_data <- phenome %>% 
-        mutate(value = 1) %>% 
-        spread(code, value, fill = 0) 
-      
-      # Next merge with genome data
-      incProgress(3/4, detail = "Merging phenome and genome data")
-      individual_data <- individual_data %>%
-        left_join(genome, by = 'IID') %>% 
-        mutate(snp = ifelse(is.na(snp), 0, snp))
-      
+      incProgress(2/3, detail = "Processing phenome data")
+      individual_data <- merge_phenome_genome(phenome, genome) 
+
       # These are codes that are not shared between the phewas and phenome data. We will remove them 
       # from either. 
       phenome_cols <- colnames(individual_data)
@@ -156,7 +149,7 @@ data_loading <- function(input, output, session) {
       app_data$category_colors <- makeDescriptionPalette(app_data$phewas_data)
       
       # Sending to app
-      incProgress(4/4, detail = "Sending to application!")
+      incProgress(3/3, detail = "Sending to application!")
       
       # shinyjs::show("goToApp")
       app_data$data_loaded <- TRUE
