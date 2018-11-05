@@ -64,7 +64,7 @@ makeTooltips <- function(phewas){
       mutate(
         tooltip = paste0(
           tooltip,
-          "<i> ", col, " </i>", rlang::UQ(rlang::sym(col)), "</br>"
+          "<i> ", col, " </i>", !! rlang::sym(col), "</br>"
         )
       )
   }

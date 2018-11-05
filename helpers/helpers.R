@@ -8,10 +8,10 @@
 # data <- readRDS(here::here('connect/phewas_digger/data/phenome_data_w_snp.Rds'))
 # phewasData <- readRDS(here::here('connect/phewas_digger/data/phewas_data.rds'))
 
-normalizePhecode <- function(codes){
-  sprintf('%3.2f', as.numeric(codes)) %>% 
-    str_pad(6, side = "left", pad = "0") 
-}
+# normalizePhecode <- function(codes){
+#   sprintf('%3.2f', as.numeric(codes)) %>% 
+#     str_pad(6, side = "left", pad = "0") 
+# }
 
 subsetToCodes <- function(data, desiredCodes, codes_to_invert = c()){
 

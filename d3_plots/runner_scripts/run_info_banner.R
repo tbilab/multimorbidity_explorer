@@ -4,7 +4,7 @@ source(here::here('helpers/genome_browser_link.R'))
 
 snp <- 'rs13283456'
 
-results <- getSNPInfo(snp)
+results <- meToolkit::getSNPInfo(snp)
 
 results$snp <- snp
 results$maf_exome <- 0.02

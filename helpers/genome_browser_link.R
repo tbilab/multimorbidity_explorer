@@ -5,14 +5,14 @@ make_genome_browser_link <- function(snp, org = 'human', db = 'hg19'){
 }
 
 # snp <- 'rs13283456'
-getSNPInfo <- function(snp){
-  results <- ncbi_snp_query(snp)
-  list(
-    chromosome = results$Chromosome,
-    gene = results$Gene, 
-    major_allele = results$Major,
-    minor_allele = results$Minor,
-    MAF = results$MAF,
-    loc = results$BP
-  )
-}
+# getSNPInfo <- function(snp){
+#   results <- ncbi_snp_query(snp)
+#   list(
+#     chromosome = results$Chromosome,
+#     gene = results$Gene, 
+#     major_allele = results$Major,
+#     minor_allele = results$Minor,
+#     MAF = results$MAF,
+#     loc = results$BP
+#   )
+# }

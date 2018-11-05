@@ -6,9 +6,6 @@ source(here::here('helpers/load_libraries.R'))
 source(here('helpers/merge_phenome_genome.R')) 
 
 
-snp_name <- 'rs5908'
-
-
 convert_to_text_data <- function(snp_name, num_cases = 4000){
   base_dir <- glue('data/preloaded/{snp_name}') %>% here()
   
