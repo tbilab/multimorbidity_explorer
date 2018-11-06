@@ -126,7 +126,7 @@ phewas_plot_table <- function(
         `[`(codes_to_keep,)
     } else {
       # alert user they attempted to remove too many codes.
-      warn_about_selection()
+      meToolkit::warnAboutSelection()
     }
   })
 

@@ -7,7 +7,7 @@ deleteCodes <- function(codes_to_delete, current_codes){
     filter(!(code %in% codes_to_delete))
   
   if(nrow(new_included) < 2){
-    warn_about_selection()
+    meToolkit::warnAboutSelection()
     return(current_codes)
   }
   
@@ -16,7 +16,7 @@ deleteCodes <- function(codes_to_delete, current_codes){
 
 isolateCodes <- function(codes_to_isolate, current_codes){
   if(length(codes_to_isolate) < 2){
-    warn_about_selection()
+    meToolkit::warnAboutSelection()
     return(current_codes)
   }
   
