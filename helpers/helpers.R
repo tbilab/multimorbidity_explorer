@@ -13,38 +13,38 @@
 #     str_pad(6, side = "left", pad = "0") 
 # }
 
-subsetToCodes <- function(data, desiredCodes, codes_to_invert = c()){
-
-  # are we going to invert any of these codes?
-  inverting_codes <- length(codes_to_invert) > 0;
-  
-  data[,c('IID', 'snp',desiredCodes)] %>% 
-    tidyr::gather(code, value, -IID, -snp) %>% {
-      if(inverting_codes){
-        left_join(., 
-            data_frame(code = codes_to_invert, invert = TRUE),
-            by = 'code'
-          )
-      } else {
-        mutate(., invert = FALSE)
-      }
-    } %>% 
-    mutate(
-      value = as.numeric(value), #gets mad when value is an integer, so just in case make sure to force it to double. 
-      value = case_when(
-        value == 1 & invert ~ 0,
-        value == 0 & invert ~ 1,
-        is.na(value) ~ 0, # unknowns always are 'nos'
-        TRUE ~ value
-      )
-    ) %>% 
-    group_by(IID) %>%
-    mutate(total_codes = sum(value)) %>%
-    ungroup() %>%
-    filter(total_codes > 0) %>%
-    select(-total_codes, -invert) %>%
-    spread(code, value)
-}
+# subsetToCodes <- function(data, desiredCodes, codes_to_invert = c()){
+# 
+#   # are we going to invert any of these codes?
+#   inverting_codes <- length(codes_to_invert) > 0;
+#   
+#   data[,c('IID', 'snp',desiredCodes)] %>% 
+#     tidyr::gather(code, value, -IID, -snp) %>% {
+#       if(inverting_codes){
+#         left_join(., 
+#             data_frame(code = codes_to_invert, invert = TRUE),
+#             by = 'code'
+#           )
+#       } else {
+#         mutate(., invert = FALSE)
+#       }
+#     } %>% 
+#     mutate(
+#       value = as.numeric(value), #gets mad when value is an integer, so just in case make sure to force it to double. 
+#       value = case_when(
+#         value == 1 & invert ~ 0,
+#         value == 0 & invert ~ 1,
+#         is.na(value) ~ 0, # unknowns always are 'nos'
+#         TRUE ~ value
+#       )
+#     ) %>% 
+#     group_by(IID) %>%
+#     mutate(total_codes = sum(value)) %>%
+#     ungroup() %>%
+#     filter(total_codes > 0) %>%
+#     select(-total_codes, -invert) %>%
+#     spread(code, value)
+# }
 
 
 # Make a standardized color pallete for the phenotype categories

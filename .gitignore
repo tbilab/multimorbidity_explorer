@@ -5,3 +5,4 @@ rsconnect/
 upset_interactive/*.rds
 .Rhistory
 .RData
+*.txt

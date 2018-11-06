@@ -1,4 +1,3 @@
-source(here('helpers/genome_browser_link.R'))
 
 info_panel_UI <- function(id, app_ns) {
   ns <- . %>% NS(id)() %>% app_ns()
