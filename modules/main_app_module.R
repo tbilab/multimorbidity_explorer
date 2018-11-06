@@ -1,5 +1,4 @@
 source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
-source(here('helpers/helpers.R'))
 source(here('helpers/code_filtering.R'))
 source(here('modules/upset_interactive.R'))
 source(here('modules/info_panel_module.R'))

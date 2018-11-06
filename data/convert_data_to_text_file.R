@@ -3,7 +3,6 @@
 
 # testing main app module in own shiny app.
 source(here::here('helpers/load_libraries.R'))
-source(here('helpers/merge_phenome_genome.R')) 
 
 
 convert_to_text_data <- function(snp_name, num_cases = 4000){
@@ -15,7 +14,7 @@ convert_to_text_data <- function(snp_name, num_cases = 4000){
   colnames(genome_raw)[2] <- 'snp'
   
   
-  individual_data <- merge_phenome_genome(phenome_raw, genome_raw)
+  individual_data <- meToolkit::mergePhenomeGenome(phenome_raw, genome_raw)
   
   get_description <- . %>%
     str_extract('<i>Description:</\\i> .*') %>%

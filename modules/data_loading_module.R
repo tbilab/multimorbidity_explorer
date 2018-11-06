@@ -1,6 +1,4 @@
 source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
-source(here('helpers/helpers.R')) 
-source(here('helpers/merge_phenome_genome.R')) 
 source(here('helpers/input_checker_functions.R'))
 
 options(shiny.maxRequestSize=30*1024^2) # increase size of files we can take uploaded to 30 megs.
@@ -133,7 +131,7 @@ data_loading <- function(input, output, session) {
       
       # first spread the phenome data to a wide format
       incProgress(2/3, detail = "Processing phenome data")
-      individual_data <- merge_phenome_genome(phenome, genome) 
+      individual_data <- meToolkit::mergePhenomeGenome(phenome, genome) 
 
       # These are codes that are not shared between the phewas and phenome data. We will remove them 
       # from either. 
