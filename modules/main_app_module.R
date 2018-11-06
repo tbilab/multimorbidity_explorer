@@ -41,7 +41,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   # deals with code selection. On startup this is passed null codes and thus selects the top based
   # upon the previous default selection decisions set in the constants file.
   observe({
-    app_data$included_codes <- getSelectedCodes(
+    app_data$included_codes <- meToolkit::chooseSelectedCodes(
       selection = NULL,             # should get rid of this later. 
       phewas_table = results_data,
       just_snps = !(app_data$snp_filter)
