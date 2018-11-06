@@ -1,5 +1,4 @@
 # Helper functions related to the networks module
-# color_palette <- makeDescriptionPalette(phecode_info)
 # takes a subset of the individual data along with phewas results
 # and returns a set of network data in the form of edges and vertices
 # as required by network3d

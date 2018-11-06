@@ -23,25 +23,25 @@ SNPS_LIST <- c("rs5908", "rs200445019", "rs35480887")
 STARTING_SNP <- 'rs200445019'
 
 
-CATEGORY_COLORS <- c(
-  "#895de6",
-  "#6ecc3b",
-  "#e34bca",
-  "#9ad843",
-  "#ff3d97",
-  "#01d8a6",
-  "#ff4254",
-  "#64c5ff",
-  "#957100",
-  "#0074d3",
-  "#aad366",
-  "#ff8dcc",
-  "#4e5b00",
-  "#ffb38f",
-  "#325c2c",
-  "#faba5f",
-  "#8b373b",
-  "#7e431e" )
+# CATEGORY_COLORS <- c(
+#   "#895de6",
+#   "#6ecc3b",
+#   "#e34bca",
+#   "#9ad843",
+#   "#ff3d97",
+#   "#01d8a6",
+#   "#ff4254",
+#   "#64c5ff",
+#   "#957100",
+#   "#0074d3",
+#   "#aad366",
+#   "#ff8dcc",
+#   "#4e5b00",
+#   "#ffb38f",
+#   "#325c2c",
+#   "#faba5f",
+#   "#8b373b",
+#   "#7e431e" )
 
 ACCEPTED_FORMATS <- c(
   "text/csv",

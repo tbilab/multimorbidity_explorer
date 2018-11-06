@@ -146,7 +146,7 @@ data_loading <- function(input, output, session) {
       app_data$individual_data<- individual_data[,-which(phenome_cols %in% bad_codes)]
       
       # Color palette for phecode categories
-      app_data$category_colors <- makeDescriptionPalette(app_data$phewas_data)
+      app_data$category_colors <- meToolkit::makeDescriptionPalette(app_data$phewas_data)
       
       # Sending to app
       incProgress(3/3, detail = "Sending to application!")
