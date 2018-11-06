@@ -117,7 +117,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     if(message$type == 'invert'){
       app_data$inverted_codes <- invertCodes(payload, app_data$inverted_codes)
     } else {
-      app_data$included_codes <- codeFilter(message$type, payload, app_data$included_codes)
+      app_data$included_codes <- meToolkit::codeFilter(message$type, payload, app_data$included_codes)
     }
   })
 
