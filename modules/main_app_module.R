@@ -1,5 +1,4 @@
 source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
-source(here('helpers/code_filtering.R'))
 source(here('modules/upset_interactive.R'))
 source(here('modules/info_panel_module.R'))
 source(here('modules/network_plots_module.R'))
@@ -115,7 +114,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     payload <- unlist(input$message$payload)[-1]
     
     if(message$type == 'invert'){
-      app_data$inverted_codes <- invertCodes(payload, app_data$inverted_codes)
+      app_data$inverted_codes <- meToolkit::invertCodes(payload, app_data$inverted_codes)
     } else {
       app_data$included_codes <- meToolkit::codeFilter(message$type, payload, app_data$included_codes)
     }
