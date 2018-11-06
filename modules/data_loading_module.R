@@ -65,7 +65,7 @@ data_loading <- function(input, output, session) {
     
     tryCatch({
       good_genome_file <- read_csv(input$genome$datapath) %>% 
-        checkGenomeFile()  
+        meToolkit::checkGenomeFile()  
       
       app_data$snp_name <- good_genome_file$snp_name
       app_data$genome_raw <- good_genome_file$data
@@ -101,7 +101,7 @@ data_loading <- function(input, output, session) {
   
   observeEvent(input$phenome, {
     tryCatch({
-      app_data$phenome_raw <- read_csv(input$phenome$datapath) %>% checkPhenomeFile()
+      app_data$phenome_raw <- read_csv(input$phenome$datapath) %>% meToolkit::checkPhenomeFile()
     },
     error = function(message){
       print(message)
@@ -167,7 +167,7 @@ data_loading <- function(input, output, session) {
     
     genome_file <- glue('{base_dir}/id_to_snp.csv') %>% 
       read_csv() %>% 
-      checkGenomeFile()  
+      meToolkit::checkGenomeFile()  
     app_data$snp_name <- genome_file$snp_name
     app_data$genome_raw <- genome_file$data
   })
