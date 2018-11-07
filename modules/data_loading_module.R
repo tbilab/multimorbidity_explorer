@@ -1,5 +1,4 @@
 source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
-source(here('helpers/input_checker_functions.R'))
 
 options(shiny.maxRequestSize=30*1024^2) # increase size of files we can take uploaded to 30 megs.
 
@@ -85,7 +84,7 @@ data_loading <- function(input, output, session) {
   observeEvent(input$phewas, {
     
     tryCatch({
-      app_data$phewas_raw <- read_csv(input$phewas$datapath) %>% checkPhewasFile()
+      app_data$phewas_raw <- read_csv(input$phewas$datapath) %>% meToolkit::checkPhewasFile()
     },
     error = function(message){
       print(message)
