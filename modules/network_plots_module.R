@@ -4,7 +4,6 @@
 # Outputs: 
 # Reactive function that emits a list of codes that have been either selected or deleted or inverted. 
 
-source(here::here('helpers/network_helpers.R'))
 network_plots_UI <- function(id, app_ns) {
   ns <- . %>% NS(id)() %>% app_ns()
   

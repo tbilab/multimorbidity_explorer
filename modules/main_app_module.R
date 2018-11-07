@@ -42,7 +42,8 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     app_data$included_codes <- meToolkit::chooseSelectedCodes(
       selection = NULL,             # should get rid of this later. 
       phewas_table = results_data,
-      just_snps = !(app_data$snp_filter)
+      just_snps = !(app_data$snp_filter),
+      p_value_threshold = P_VAL_THRESHOLD
     )
   })
 

@@ -1,4 +1,3 @@
-source(here::here('helpers/network_helpers.R'))
 
 phewas_plot_table_UI <- function(id, app_ns) {
   ns <- . %>% NS(id)() %>% app_ns()
