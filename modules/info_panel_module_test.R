@@ -1,5 +1,5 @@
 source(here::here('helpers/load_libraries.R'))
-source(here('modules/info_panel_module.R'))
+# source(here('modules/info_panel_module.R'))
 
 cached_data <- read_rds(here('data/infoboxes_data.rds'))
 
@@ -23,14 +23,14 @@ ui <- shinyUI(
     ),
     dashboardBody(
       includeCSS(here("www/custom.css")),
-      info_panel_UI('info_panel', I)
+      meToolkit::infoPanel_UI('info_panel', I)
     ),
     skin = 'black'
   )
 )
 
 server <- function(input, output, session) {
-  callModule(info_panel, 'info_panel', snp_name, individual_data, subset_maf)
+  callModule(meToolkit::infoPanel, 'info_panel', snp_name, individual_data, subset_maf)
 }
 
 shinyApp(ui, server)

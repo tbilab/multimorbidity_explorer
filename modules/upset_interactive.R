@@ -56,7 +56,7 @@ upset2 <- function(input, output, session, codeData, snpData, currentSnp) {
         PropMa = MaCarriers/Total
       ) %>% {
 
-        RR_results <- meToolkit::calc_RR_CI(.$Total[2], .$MaCarriers[2], .$Total[1], .$MaCarriers[1])
+        RR_results <- meToolkit::calcRrCi(.$Total[2], .$MaCarriers[2], .$Total[1], .$MaCarriers[1])
         
         data_frame(
           pointEst = RR_results$PE,

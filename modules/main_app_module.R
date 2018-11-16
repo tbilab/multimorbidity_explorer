@@ -13,11 +13,11 @@ main_app_UI <- function(id) {
       column(
         width = 5,
         phewas_plot_table_UI('phewas_plot_table', ns),
-        upset2_UI('upsetPlotV2', ns)
+        meToolkit::upset_UI('upsetPlotV2', ns)
       ),
       column(
         width = 7,
-        info_panel_UI('info_panel', ns),
+        meToolkit::infoPanel_UI('info_panel', ns),
         network_plots_UI('network_plots', ns)
       )
     )
@@ -127,11 +127,11 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   observe({
     req(app_data$subset_data)
 
-    output$upsetPlotV2 <- callModule(upset2, 'upsetPlotV2',
+    output$upsetPlotV2 <- callModule(meToolkit::upset, 'upsetPlotV2',
                                      codeData = app_data$subset_data %>% mutate(snp = ifelse(snp != 0, 1, 0)),
                                      snpData = individual_data)
     
     # While we're at it, send data to the info boxes
-    callModule(info_panel, 'info_panel', snp_name, individual_data, app_data$maf_subset )
+    callModule(meToolkit::infoPanel, 'info_panel', snp_name, individual_data, app_data$maf_subset )
   })
 }

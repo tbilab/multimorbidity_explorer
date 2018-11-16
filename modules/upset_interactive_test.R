@@ -1,7 +1,7 @@
 # This doesn't work in its current form and needs to be modified to work with the data available in the upset folder within d3 plots.
 
 source(here::here('helpers/load_libraries.R'))
-source(here('modules/upset_interactive.R'))
+# source(here('modules/upset_interactive.R'))
 
 upsetData <- here('data/upset_data.rds') %>% 
   readr::read_rds()
@@ -26,7 +26,7 @@ ui <- shinyUI(
         label = "Just minor-allele carriers", 
         value = FALSE
       ),
-      upset2_UI('upsetPlotV2')
+      meToolkit::upset_UI('upsetPlotV2')
     ),
     skin = 'black'
   )
@@ -45,7 +45,9 @@ server <- function(input, output, session) {
       this
     }
     
-    callModule(upset2, 'upsetPlotV2',
+    print('running module!')
+    
+    callModule(meToolkit::upset, 'upsetPlotV2',
                codeData = codeFiltered,
                snpData = snpData)
   })
