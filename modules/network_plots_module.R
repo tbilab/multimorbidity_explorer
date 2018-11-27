@@ -82,7 +82,7 @@ network_plots <- function(
       jsonlite::toJSON() %>%
       r2d3::r2d3(
         script = here('d3_plots/network_2d.js'),
-        container = 'canvas',
+        container = 'div',
         dependencies = "d3-jetpack",
         options = list(
             just_snp = snp_filter, 

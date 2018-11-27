@@ -2,6 +2,9 @@ const padding = 20;
 const div_padding_bottom = 0;
 const div_padding_left = 0;
 const tooltip_offset = 15;
+const w = width - div_padding_left*2;
+const h = height- div_padding_bottom*2; 
+
 
 const case_radius = 2;
 const case_opacity = 1;
@@ -10,8 +13,22 @@ const edge_color = '#aaa';
 const edge_opacity = options.just_snp ? 0.2: 0.07;
 
 // for some reason the canvas width and height sometimes are out of sync with the passed width and height variables. 
-const w = +canvas.attr('width');
-const h = +canvas.attr('height');
+
+div.style('position', 'relative');
+
+const svg = div.append('svg')
+  .at({height,width})
+  .st({
+    position: 'absolute',
+    bottom: div_padding_bottom, 
+    left: div_padding_left,
+    width: w, 
+    height: h,
+  });
+  
+const canvas = div.append('canvas').at({height,width});
+const context = canvas.node().getContext('2d');
+
 
 const small_edge = w < h? w: h,
       OUTER_RING_RADIUS = (small_edge/2)*0.35,
@@ -19,10 +36,7 @@ const small_edge = w < h? w: h,
 
 let selected_codes = [];
 
-const container = d3.select(canvas.node().parentElement);
-container.style('position', 'relative');
 
-const context = canvas.node().getContext('2d');
 
 let current_transform = d3.zoomIdentity;
 
@@ -39,16 +53,7 @@ function sendMessage(type, selected_codes = []){
   );
 };
 
-const svg = container.selectAppend('svg')
-  .st({
-    position: 'absolute',
-    bottom: div_padding_bottom, 
-    left: div_padding_left,
-    width: w, 
-    height: h
-  });
-  
-const tooltip = container.selectAppend('div.network_tooltip')
+const tooltip = div.selectAppend('div.network_tooltip')
   .attr('class', 'network_tooltip')
   .st({
     background:'white',
@@ -69,7 +74,7 @@ const button_span = {
   paddingRight: "5px"
 };
 
-const node_interaction_popup = container.selectAppend('div.node_interaction_popup')
+const node_interaction_popup = div.selectAppend('div.node_interaction_popup')
   .attr('class', 'node_interaction_popup')
   .st({
     background:'white',
