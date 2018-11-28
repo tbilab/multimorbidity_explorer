@@ -14,6 +14,7 @@ const edge_opacity = options.just_snp ? 0.2: 0.07;
 
 // for some reason the canvas width and height sometimes are out of sync with the passed width and height variables. 
 
+div.html('');
 div.style('position', 'relative');
 
 const svg = div.append('svg')
