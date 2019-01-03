@@ -9,6 +9,7 @@ category_colors <- cached_data$category_colors
 phewas_data     <- cached_data$phewas_data 
 snp_name        <- cached_data$snp_name 
 
+
 ui <- shinyUI(
   dashboardPage(
     dashboardHeader(

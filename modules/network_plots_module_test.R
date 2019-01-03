@@ -9,7 +9,6 @@ cached_data <- read_rds(here('data/network_data.rds'))
 subset_data <- cached_data$subset_data
 results_data <- cached_data$results_data
 inverted_codes <- cached_data$inverted_codes
-category_colors <- cached_data$category_colors 
 snp_filter <- cached_data$snp_filter
 
 
@@ -40,7 +39,6 @@ server <- function(input, output, session) {
     subset_data = subset_data, 
     results_data = results_data,
     inverted_codes = inverted_codes, 
-    category_colors = category_colors,
     parent_ns = session$ns,
     snp_filter = TRUE # THIS NEEDS TO BE WIRED UP PROPERLY 
   )

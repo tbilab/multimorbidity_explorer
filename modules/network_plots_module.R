@@ -4,6 +4,7 @@
 # Outputs: 
 # Reactive function that emits a list of codes that have been either selected or deleted or inverted. 
 
+
 network_plots_UI <- function(id, app_ns) {
   ns <- . %>% NS(id)() %>% app_ns()
   
@@ -53,7 +54,6 @@ network_plots <- function(
   subset_data, 
   results_data,
   inverted_codes, 
-  category_colors,
   snp_filter,
   parent_ns
 ) {
@@ -64,17 +64,12 @@ network_plots <- function(
   # Generate network data to be used in both 2d and 3d plots
   network_data <- subset_data %>%
     meToolkit::makeNetworkData(
-      results_data,
+      results_data %>% meToolkit::buildColorPalette(category),
       inverted_codes = inverted_codes,
-      category_colors$palette,
       no_copies = NO_SNP_COLOR,
       one_copy = ONE_SNP_COPY_COLOR,
       two_copies = TWO_SNP_COPIES_COLOR
     )
-  
-  write_rds(network_data, here('data/testing_network_data_snp_filter.rds'))
-  
-  # browser()
   
   # send data and options to the 2d plot
   output$networkPlot2d <- r2d3::renderD3({

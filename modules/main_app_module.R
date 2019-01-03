@@ -1,6 +1,4 @@
 source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
-# source(here('modules/upset_interactive.R'))
-# source(here('modules/info_panel_module.R'))
 source(here('modules/network_plots_module.R'))
 source(here('modules/phewas_plot_table_module.R'))
 
@@ -88,6 +86,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     )
     
     observeEvent(manhattan_plot(), {
+      print('manhattan plot has triggered')
       app_data$included_codes <- manhattan_plot()
     })
   })
@@ -99,7 +98,6 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
       subset_data = app_data$subset_data, 
       results_data = results_data,
       inverted_codes = app_data$inverted_codes, 
-      category_colors = category_colors,
       snp_filter = app_data$snp_filter, # THIS NEEDS TO BE WIRED UP PROPERLY 
       parent_ns = session$ns 
     )
@@ -111,6 +109,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   
   # deals with messages from components for filtering the visable codes. 
   observeEvent(input$message, {
+    
     message <- input$message
     payload <- unlist(input$message$payload)[-1]
     

@@ -43,6 +43,8 @@ phewas_plot_table <- function(
     actionButton(session$ns(button_id), "Update")
   })
   
+  last_selection <- tibble()
+  
   module_data <- reactiveValues(
     selected_codes = c()
   )
@@ -132,7 +134,16 @@ phewas_plot_table <- function(
   # return value of user's choice on the snp filtering. 
   return(
     reactive({
-      module_data$selected_codes
+      current <- module_data$selected_codes
+      sameAsLastFilter <- all_equal(last_selection, module_data$selected_codes) %>% 
+        isTRUE()
+      if(is.null(current) | sameAsLastFilter) {
+        return(NULL)
+      } else {
+        last_selection <<- module_data$selected_codes # update the last selection point so we can check what we have on new trigger.
+        
+        return(module_data$selected_codes)
+      }
     })
   )
 }
