@@ -53,7 +53,15 @@ phewas_plot_table <- function(
   # Manhattan Plot of Phewas Results
   #----------------------------------------------------------------
   output$manhattanPlot <- renderPlotly({
+    color_key <- results_data %>% 
+      meToolkit::buildColorPalette(category) %>% 
+      group_by(category) %>% 
+      summarise(color = first(color)) %$% {
+        color %>% magrittr::set_names(category)
+      }
+    
     results_data %>%
+      meToolkit::buildColorPalette(category) %>% 
       mutate(
         selected = ifelse(code %in% included_codes$code, 1, 0.2),
         id = 1:n(),
@@ -63,7 +71,7 @@ phewas_plot_table <- function(
         x = ~code,
         y = ~-log10(p_val),
         key = ~id,
-        color = ~category, colors = category_colors$named_array,
+        color = ~category, colors = color_key,
         symbol = ~selected, symbols = c(1,20),
         size = ~selected, sizes = c(2,30),
         text = ~tooltip,
