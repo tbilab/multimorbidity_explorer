@@ -22,7 +22,7 @@ main_app_UI <- function(id) {
   )
 }
 
-main_app <- function(input, output, session, individual_data, results_data, snp_name, category_colors) {
+main_app <- function(input, output, session, individual_data, results_data, snp_name) {
 
   #----------------------------------------------------------------
   # Reactive Values based upon user input
@@ -81,8 +81,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     manhattan_plot <- callModule(
       phewas_plot_table, 'phewas_plot_table',
       results_data = results_data, 
-      included_codes = app_data$included_codes,
-      category_colors = category_colors
+      included_codes = app_data$included_codes
     )
     
     observeEvent(manhattan_plot(), {

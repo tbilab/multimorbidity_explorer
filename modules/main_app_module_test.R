@@ -5,7 +5,7 @@ source(here::here('modules/main_app_module.R'))
 cached_data <- read_rds(here('data/preloaded_rs13283456.rds'))
 
 individual_data <- cached_data$individual_data 
-category_colors <- cached_data$category_colors 
+# category_colors <- cached_data$category_colors 
 phewas_data     <- cached_data$phewas_data 
 snp_name        <- cached_data$snp_name 
 
@@ -29,8 +29,7 @@ server <- function(input, output, session) {
     main_app, "main_app",
     individual_data = individual_data,
     results_data = phewas_data,
-    snp_name = snp_name,
-    category_colors = category_colors
+    snp_name = snp_name
   )
 }
 

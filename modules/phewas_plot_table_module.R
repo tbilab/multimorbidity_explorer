@@ -33,8 +33,7 @@ phewas_plot_table_UI <- function(id, app_ns) {
 phewas_plot_table <- function(
   input, output, session, 
   results_data, 
-  included_codes,
-  category_colors
+  included_codes
 ) {
   # we need to give the button an ever changing ID or else we will run into values hanging around on refresh causing infinite loops
   button_id <- paste0('table_filter_', as.integer(Sys.time()))
