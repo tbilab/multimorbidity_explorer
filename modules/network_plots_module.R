@@ -64,7 +64,7 @@ network_plots <- function(
   # Generate network data to be used in both 2d and 3d plots
   network_data <- subset_data %>%
     meToolkit::makeNetworkData(
-      results_data %>% meToolkit::buildColorPalette(category),
+      results_data,
       inverted_codes = inverted_codes,
       no_copies = NO_SNP_COLOR,
       one_copy = ONE_SNP_COPY_COLOR,

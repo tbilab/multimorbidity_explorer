@@ -7,7 +7,8 @@ source(here('modules/network_plots_module.R'))
 cached_data <- read_rds(here('data/network_data.rds'))
 
 subset_data <- cached_data$subset_data
-results_data <- cached_data$results_data
+results_data <- (cached_data$results_data) %>% 
+  meToolkit::buildColorPalette(category)
 inverted_codes <- cached_data$inverted_codes
 snp_filter <- cached_data$snp_filter
 

@@ -53,7 +53,6 @@ phewas_plot_table <- function(
   #----------------------------------------------------------------
   output$manhattanPlot <- renderPlotly({
     color_key <- results_data %>% 
-      meToolkit::buildColorPalette(category) %>% 
       group_by(category) %>% 
       summarise(color = first(color)) %$% {
         color %>% magrittr::set_names(category)
