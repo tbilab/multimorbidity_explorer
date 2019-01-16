@@ -50,7 +50,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
 
     subseted_to_codes <- individual_data %>% 
       meToolkit::subsetToCodes(
-        desiredCodes = app_data$included_codes$code,
+        desired_codes = app_data$included_codes$code,
         codes_to_invert = app_data$inverted_codes
       )
     

@@ -38,9 +38,9 @@ server <- function(input, output, session) {
     app <- callModule(
       main_app, "main_app",
       individual_data = all_data$individual_data,
-      results_data = all_data$phewas_data,
-      snp_name = all_data$snp_name,
-      category_colors = all_data$category_colors
+      results_data = all_data$phewas_data %>% meToolkit::buildColorPalette(category),
+      snp_name = all_data$snp_name
+      # ,category_colors = all_data$category_colors
     )
   })
 }

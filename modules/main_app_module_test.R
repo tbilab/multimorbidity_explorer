@@ -5,8 +5,7 @@ source(here::here('modules/main_app_module.R'))
 cached_data <- read_rds(here('data/preloaded_rs13283456.rds'))
 
 individual_data <- cached_data$individual_data 
-phewas_data     <- (cached_data$phewas_data) %>% 
-  meToolkit::buildColorPalette(category)
+phewas_data     <- (cached_data$phewas_data) %>% meToolkit::buildColorPalette(category)
 snp_name        <- cached_data$snp_name 
 
 ui <- shinyUI(
