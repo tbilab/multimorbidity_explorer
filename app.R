@@ -1,15 +1,16 @@
-source(here::here('helpers/load_libraries.R'))
-source(here::here('modules/data_loading_module.R'))
-source(here::here('modules/main_app_module.R'))
+library(here)
+source(here('helpers/load_libraries.R'))
+source(here('modules/data_loading_module.R'))
+source(here('modules/main_app_module.R'))
 
 ui <- shinyUI(
   dashboardPage(
     dashboardHeader(
       title = "Multimorbidity Explorer",
-      titleWidth = 300
+      titleWidth = 300 
     ),
     dashboardSidebar(disable = TRUE),
-    dashboardBody(
+    dashboardBody( 
       includeCSS(here("www/custom.css")),
       shinyjs::useShinyjs(debug = TRUE),
       uiOutput("ui")
@@ -40,7 +41,6 @@ server <- function(input, output, session) {
       individual_data = all_data$individual_data,
       results_data = all_data$phewas_data %>% meToolkit::buildColorPalette(category),
       snp_name = all_data$snp_name
-      # ,category_colors = all_data$category_colors
     )
   })
 }

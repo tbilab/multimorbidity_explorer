@@ -1,10 +1,3 @@
-# Inputs: 
-# 
-
-# Outputs: 
-# Reactive function that emits a list of codes that have been either selected or deleted or inverted. 
-
-
 network_plots_UI <- function(id, app_ns) {
   ns <- . %>% NS(id)() %>% app_ns()
   
@@ -36,13 +29,7 @@ network_plots_UI <- function(id, app_ns) {
            tabPanel(
              "2D",
              div(class = 'networkPlot',
-                 r2d3::d3Output(ns("networkPlot2d"), height = '100%')
-             )
-           ),
-           tabPanel(
-             "3D", 
-             div(class = 'networkPlot',
-                 network3d::network3dOutput(ns("networkPlot"), height = '100%')
+                 meToolkit::network2d_UI(ns('networkPlot'),  height = '100%')
              )
            )
     )
@@ -54,14 +41,13 @@ network_plots <- function(
   subset_data, 
   results_data,
   inverted_codes, 
-  snp_filter,
-  parent_ns
+  snp_filter
 ) {
   
   # Make sure the checkbox follows what it should
   updateCheckboxInput(session, "snp_filter", value = snp_filter)
   
-  # Generate network data to be used in both 2d and 3d plots
+  # Generate network data 
   network_data <- subset_data %>%
     meToolkit::makeNetworkData(
       results_data,
@@ -71,39 +57,8 @@ network_plots <- function(
       two_copies = TWO_SNP_COPIES_COLOR
     )
   
-  # send data and options to the 2d plot
-  output$networkPlot2d <- r2d3::renderD3({
-    network_data %>%
-      jsonlite::toJSON() %>%
-      r2d3::r2d3(
-        script = here('d3_plots/network_2d.js'),
-        container = 'div',
-        dependencies = "d3-jetpack",
-        options = list(
-            just_snp = snp_filter, 
-            msg_loc = parent_ns('message')
-          )
-      )
-  })
-  
-  # send data and options to the 3d plot
-  output$networkPlot <- network3d::renderNetwork3d({
-    network_data %$%
-      network3d::network3d(
-        force_explorer = FALSE,
-        html_tooltip = TRUE,
-        vertices,
-        edges,
-        manybody_strength = -1.9,
-        max_iterations = 120,
-        edge_opacity = 0.2
-      )
-  })
-  
-  # return value of user's choice on the snp filtering. 
-  return(
-    reactive({
-      return(input$snp_filter)
-    })
-  )
+  networkPlot <- callModule(meToolkit::network2d, session$ns('networkPlot'), network_data, snp_filter=snp_filter)
+
+  # return value of user's choice on code filtering
+  return(networkPlot)
 }

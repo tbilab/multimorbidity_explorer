@@ -22,8 +22,7 @@ ui <- shinyUI(
     dashboardSidebar(
       h2('Settings'),
       sliderInput("setSize", "Min Size of Set:",
-                  min = 0, max = 250,
-                  value = 20),
+                  min = 0, max = 250, value = 20),
       collapsed = TRUE
     ),
     dashboardBody(
@@ -40,7 +39,6 @@ server <- function(input, output, session) {
     subset_data = subset_data, 
     results_data = results_data,
     inverted_codes = inverted_codes, 
-    parent_ns = session$ns,
     snp_filter = TRUE # THIS NEEDS TO BE WIRED UP PROPERLY 
   )
   

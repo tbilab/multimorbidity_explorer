@@ -16,7 +16,40 @@ main_app_UI <- function(id) {
       column(
         width = 7,
         meToolkit::infoPanel_UI('info_panel', ns),
-        network_plots_UI('network_plots', ns)
+        tagList(
+          box(
+            title = "Phenotype-Subject Bipartite Network",
+            solidHeader = TRUE,          
+            width = NULL,
+            height = "20%",
+            div(class = 'network_header',
+                div(class = 'network_controls',
+                    checkboxInput(
+                      ns("snp_filter"), 
+                      label = "Just minor-allele carriers", 
+                      value = FALSE
+                    )
+                ),
+                div(class = 'network_controls',
+                    span('Copies of minor allele:'),
+                    span(class = 'legend_entry', style=paste0("background: ", NO_SNP_COLOR), "0"), 
+                    span(class = 'legend_entry', style=paste0("background: ", ONE_SNP_COPY_COLOR), "1"), 
+                    span(class = 'legend_entry', style=paste0("background: ", TWO_SNP_COPIES_COLOR), "2") 
+                )   
+            )
+          ),
+          tabBox(id = 'network_plot_box',
+                 title = "",
+                 width = NULL,
+                 tabPanel(
+                   "2D",
+                   div(class = 'networkPlot',
+                       meToolkit::network2d_UI(ns('networkPlot'),  height = '100%')
+                   )
+                 )
+          )
+        )
+        # network_plots_UI('network_plots', ns)
       )
     )
   )
@@ -92,18 +125,21 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   
   # Draw network diagrams
   observe({
-    networks <- callModule(
-      network_plots, 'network_plots',
-      subset_data = app_data$subset_data, 
-      results_data = results_data,
-      inverted_codes = app_data$inverted_codes, 
-      snp_filter = app_data$snp_filter, # THIS NEEDS TO BE WIRED UP PROPERLY 
-      parent_ns = session$ns 
-    )
+    # Generate network data 
+    network_data <- app_data$subset_data %>%
+      meToolkit::makeNetworkData(
+        results_data,
+        inverted_codes = app_data$inverted_codes,
+        no_copies = NO_SNP_COLOR,
+        one_copy = ONE_SNP_COPY_COLOR,
+        two_copies = TWO_SNP_COPIES_COLOR
+      )
     
-    observeEvent(networks(), {
-      app_data$snp_filter <- networks()
-    })
+    networkPlot <- callModule(meToolkit::network2d, 'networkPlot', network_data, snp_filter=FALSE)
+
+  #   observeEvent(networks(), {
+  #     app_data$snp_filter <- networks()
+  #   })
   })
   
   # deals with messages from components for filtering the visable codes. 
