@@ -11,7 +11,12 @@ main_app_UI <- function(id) {
       column(
         width = 5,
         phewas_plot_table_UI('phewas_plot_table', ns),
-        meToolkit::upset_UI('upsetPlotV2', ns)
+        box(
+          title = "Upset Plot",
+          solidHeader = TRUE,
+          width = NULL,
+          meToolkit::upset_UI(ns('upsetPlot'), div_class = 'upset_plot')
+        )
       ),
       column(
         width = 7,
@@ -20,7 +25,10 @@ main_app_UI <- function(id) {
           title = "Phenotype-Subject Bipartite Network",
           solidHeader = TRUE,          
           width = NULL,
-          meToolkit::network2d_UI(ns('networkPlot'), height = '80%')
+          meToolkit::network2d_UI(ns('networkPlot'), 
+                                  height = '80%', 
+                                  div_class = 'network_plot',
+                                  snp_colors = c(NO_SNP_COLOR, ONE_SNP_COPY_COLOR, TWO_SNP_COPIES_COLOR) )
         )
       )
     )
@@ -49,6 +57,9 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     snp_filter = FALSE       
   )
   
+  # Reactive variable that stores the most recent interaction
+  app_interaction <- reactiveVal()
+  
   #----------------------------------------------------------------
   # App values that change based upon the current state
   #----------------------------------------------------------------  
@@ -73,13 +84,54 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     )
   })
   
-  network_plot <- callModule(meToolkit::network2d, 'networkPlot', curr_network_data, snp_filter=reactive(app_state$snp_filter))
-  
-  observeEvent(network_plot(),{
-    print('the network plot has a message!')
-    print(network_plot())
+  #----------------------------------------------------------------
+  # Route all actions through a switch statement to modify the 
+  # app's values 
+  #---------------------------------------------------------------- 
+  observeEvent(app_interaction(),{
+    action_type <- app_interaction() %>% pluck('type')
+    action_payload <- app_interaction() %>% pluck('payload')
+    extract_codes <- . %>% unlist() %>% tail(-1)
+    remove_codes <- function(codes, to_remove){
+      codes[!(codes %in% to_remove)]
+    }
+    
+    switch(action_type,
+           delete = {
+             codes_to_delete <- action_payload %>% extract_codes()
+             prev_selected_codes <- app_state$selected_codes
+             app_state$selected_codes <- remove_codes(prev_selected_codes, codes_to_delete)
+             
+             print('deleting codes:')
+             print(codes_to_delete)
+           },
+           isolate = {
+             print('isolating codes!')
+           }, 
+           snp_filter_change = {
+             print('filtering snp status')
+           },
+           stop("Unknown input")
+    )
   })
   
+  #----------------------------------------------------------------
+  # Setup all the components of the app
+  #---------------------------------------------------------------- 
+  
+  
+  ## Network plot
+  network_plot <- callModule(meToolkit::network2d, 'networkPlot', curr_network_data, snp_filter=reactive(app_state$snp_filter))
+  
+  # Watch network plot for messages and send them to the interaction reactive
+  observeEvent(network_plot(),{
+    print('the network plot has a message!')
+    app_interaction(network_plot())
+  })
+  
+  ## Upset plot
+  upset_plot <- callModule(meToolkit::upset, 'upsetPlot', curr_ind_data, select(individual_data, IID, snp))
+
   
   # deals with code selection. On startup this is passed null codes and thus selects the top based
   # upon the previous default selection decisions set in the constants file.
@@ -148,13 +200,6 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
         one_copy = ONE_SNP_COPY_COLOR,
         two_copies = TWO_SNP_COPIES_COLOR
       )
-    
-    # networkPlot <- callModule(meToolkit::network2d, 'networkPlot', network_data, snp_filter=app_data$snp_filter)
-
-    # observeEvent(networkPlot(),{
-    #   print("we have a message from the network!")
-    #   print(networkPlot())
-    # })
   })
   
   # deals with messages from components for filtering the visable codes. 
@@ -173,14 +218,14 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   #----------------------------------------------------------------
   # Upset plot of comorbidity patterns
   #----------------------------------------------------------------
-  observe({
-    req(app_data$subset_data)
-
-    output$upsetPlotV2 <- callModule(meToolkit::upset, 'upsetPlotV2',
-                                     codeData = app_data$subset_data %>% mutate(snp = ifelse(snp != 0, 1, 0)),
-                                     snpData = individual_data)
-    
-    # While we're at it, send data to the info boxes
-    callModule(meToolkit::infoPanel, 'info_panel', snp_name, individual_data, app_data$maf_subset )
-  })
+  # observe({
+  #   req(app_data$subset_data)
+  # 
+  #   output$upsetPlotV2 <- callModule(meToolkit::upset, 'upsetPlotV2',
+  #                                    codeData =individual_data %>% mutate(snp = ifelse(snp != 0, 1, 0)),
+  #                                    snpData = individual_data)
+  #   
+  #   # While we're at it, send data to the info boxes
+  #   callModule(meToolkit::infoPanel, 'info_panel', snp_name, individual_data, app_data$maf_subset )
+  # })
 }
