@@ -16,40 +16,12 @@ main_app_UI <- function(id) {
       column(
         width = 7,
         meToolkit::infoPanel_UI('info_panel', ns),
-        tagList(
-          box(
-            title = "Phenotype-Subject Bipartite Network",
-            solidHeader = TRUE,          
-            width = NULL,
-            height = "20%",
-            div(class = 'network_header',
-                div(class = 'network_controls',
-                    checkboxInput(
-                      ns("snp_filter"), 
-                      label = "Just minor-allele carriers", 
-                      value = FALSE
-                    )
-                ),
-                div(class = 'network_controls',
-                    span('Copies of minor allele:'),
-                    span(class = 'legend_entry', style=paste0("background: ", NO_SNP_COLOR), "0"), 
-                    span(class = 'legend_entry', style=paste0("background: ", ONE_SNP_COPY_COLOR), "1"), 
-                    span(class = 'legend_entry', style=paste0("background: ", TWO_SNP_COPIES_COLOR), "2") 
-                )   
-            )
-          ),
-          tabBox(id = 'network_plot_box',
-                 title = "",
-                 width = NULL,
-                 tabPanel(
-                   "2D",
-                   div(class = 'networkPlot',
-                       meToolkit::network2d_UI(ns('networkPlot'),  height = '100%')
-                   )
-                 )
-          )
+        box(
+          title = "Phenotype-Subject Bipartite Network",
+          solidHeader = TRUE,          
+          width = NULL,
+          meToolkit::network2d_UI(ns('networkPlot'), height = '80%')
         )
-        # network_plots_UI('network_plots', ns)
       )
     )
   )
@@ -66,6 +38,48 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     snp_filter = FALSE,       # start with all individuals regardless of snp status. 
     maf_subset = FALSE        # MAF for patients with current subset of codes. 
   )
+  #----------------------------------------------------------------
+  # App state that can be modified by user
+  #----------------------------------------------------------------  
+  app_state <- reactiveValues( 
+    # Start with ten most significant phecodes
+    selected_codes = results_data %>% arrange(p_val) %>% head(10) %>% pull(code),
+    inverted_codes = c(),
+    # start with all individuals regardless of snp status
+    snp_filter = FALSE       
+  )
+  
+  #----------------------------------------------------------------
+  # App values that change based upon the current state
+  #----------------------------------------------------------------  
+  # Individual data subset by the currently viewed phecodes and if we've filtered the snp
+  curr_ind_data <- reactive({
+    meToolkit::subsetToCodes(
+      individual_data, 
+      desired_codes = app_state$selected_codes,
+      codes_to_invert = app_state$inverted_codes
+    )
+  })
+  
+  # Network representation of the current data for use in the network plot(s)
+  curr_network_data <- reactive({
+    meToolkit::makeNetworkData(
+      data = curr_ind_data(),
+      phecode_info = results_data,
+      inverted_codes = app_state$inverted_codes,
+      no_copies = NO_SNP_COLOR,
+      one_copy = ONE_SNP_COPY_COLOR,
+      two_copies = TWO_SNP_COPIES_COLOR
+    )
+  })
+  
+  network_plot <- callModule(meToolkit::network2d, 'networkPlot', curr_network_data, snp_filter=reactive(app_state$snp_filter))
+  
+  observeEvent(network_plot(),{
+    print('the network plot has a message!')
+    print(network_plot())
+  })
+  
   
   # deals with code selection. On startup this is passed null codes and thus selects the top based
   # upon the previous default selection decisions set in the constants file.
@@ -135,11 +149,12 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
         two_copies = TWO_SNP_COPIES_COLOR
       )
     
-    networkPlot <- callModule(meToolkit::network2d, 'networkPlot', network_data, snp_filter=FALSE)
+    # networkPlot <- callModule(meToolkit::network2d, 'networkPlot', network_data, snp_filter=app_data$snp_filter)
 
-  #   observeEvent(networks(), {
-  #     app_data$snp_filter <- networks()
-  #   })
+    # observeEvent(networkPlot(),{
+    #   print("we have a message from the network!")
+    #   print(networkPlot())
+    # })
   })
   
   # deals with messages from components for filtering the visable codes. 

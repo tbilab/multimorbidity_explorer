@@ -23,7 +23,7 @@
   80          + 2*40             + 43 +            55     + 165 + 20
   3 headers 
 */
-.networkPlot {
+.network_plot {
   height: calc(100vh - 440px) !important;
 } 
 
