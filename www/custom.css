@@ -10,11 +10,11 @@
 */
 
 #manhattanPlot {
-  height: calc(40vh - 130px) !important;
+  height: calc(40vh - 124px) !important;
 } 
 
-#upset2 {
-  height: calc(60vh - 133px) !important;
+.upset_plot {
+  height: calc(60vh - 124px) !important;
 }
 
 /*
@@ -24,11 +24,9 @@
   3 headers 
 */
 .network_plot {
-  height: calc(65vh - 80px) !important;
+  height: calc(100vh - 326px) !important;
 } 
-.upset_plot {
-  height: calc(55vh - 80px) !important;
-}
+
 
 .skin-black .main-header>.logo {
    border-right: 0;
