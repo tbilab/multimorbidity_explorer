@@ -24,10 +24,10 @@
   3 headers 
 */
 .network_plot {
-  height: calc(100vh - 440px) !important;
+  height: calc(65vh - 80px) !important;
 } 
 .upset_plot {
-  height: calc(60vh - 233px) !important;
+  height: calc(55vh - 80px) !important;
 }
 
 .skin-black .main-header>.logo {

@@ -1,7 +1,4 @@
 source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
-source(here('modules/network_plots_module.R'))
-source(here('modules/phewas_plot_table_module.R'))
-
 
 main_app_UI <- function(id) {
   ns <- NS(id)
@@ -10,7 +7,25 @@ main_app_UI <- function(id) {
     fluidRow(
       column(
         width = 5,
-        phewas_plot_table_UI('phewas_plot_table', ns),
+        box(title = "Manhattan Plot (Phecode 1.2)",
+            width = NULL,
+            solidHeader=TRUE,          
+            collapsible = TRUE,
+            div(id = 'manhattanPlot',
+               meToolkit::manhattan_plot_UI(ns('manhattan_plot'))
+            )
+        ),
+        div(id = 'selected_code_box',
+            box(
+              title = "Phewas Results (Selected Codes)",
+              id = 'codeTable',
+              solidHeader=TRUE,          
+              width = NULL,
+              collapsible = TRUE,
+              collapsed = TRUE,
+              meToolkit::phewas_table_UI(ns('phewas_table'))
+            )
+        ),
         box(
           title = "Upset Plot",
           solidHeader = TRUE,
@@ -20,12 +35,18 @@ main_app_UI <- function(id) {
       ),
       column(
         width = 7,
-        meToolkit::infoPanel_UI('info_panel', ns),
+        div(style = "margin-top: 10px;",
+          box(
+            solidHeader = TRUE,
+            width = NULL,
+            meToolkit::info_panel_UI(ns('info_panel'))
+          )
+        ),
         box(
           title = "Phenotype-Subject Bipartite Network",
           solidHeader = TRUE,          
           width = NULL,
-          meToolkit::network2d_UI(ns('networkPlot'), 
+          meToolkit::network_plot_UI(ns('network_plot'), 
                                   height = '80%', 
                                   div_class = 'network_plot',
                                   snp_colors = c(NO_SNP_COLOR, ONE_SNP_COPY_COLOR, TWO_SNP_COPIES_COLOR) )
@@ -38,27 +59,16 @@ main_app_UI <- function(id) {
 main_app <- function(input, output, session, individual_data, results_data, snp_name) {
 
   #----------------------------------------------------------------
-  # Reactive Values based upon user input
-  #----------------------------------------------------------------
-  app_data <- reactiveValues( 
-    included_codes = NULL,
-    inverted_codes = c(),
-    snp_filter = FALSE,       # start with all individuals regardless of snp status. 
-    maf_subset = FALSE        # MAF for patients with current subset of codes. 
-  )
-  #----------------------------------------------------------------
-  # App state that can be modified by user
+  # App state that can be modified by user. All state variables are prefixed with state_*
   #----------------------------------------------------------------  
-  app_state <- reactiveValues( 
-    # Start with ten most significant phecodes
-    selected_codes = results_data %>% arrange(p_val) %>% head(10) %>% pull(code),
-    inverted_codes = c(),
-    # start with all individuals regardless of snp status
-    snp_filter = FALSE       
-  )
+  # Start with ten most significant phecodes
+  state_selected_codes <- reactiveVal(results_data %>% arrange(p_val) %>% head(10) %>% pull(code))
   
-  # Reactive variable that stores the most recent interaction
-  app_interaction <- reactiveVal()
+  # Start with all codes not inverted
+  state_inverted_codes <- reactiveVal(c())
+  
+  # start with all individuals regardless of snp status
+  state_snp_filter <- reactiveVal(FALSE)
   
   #----------------------------------------------------------------
   # App values that change based upon the current state
@@ -67,8 +77,8 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   curr_ind_data <- reactive({
     meToolkit::subsetToCodes(
       individual_data, 
-      desired_codes = app_state$selected_codes,
-      codes_to_invert = app_state$inverted_codes
+      desired_codes = state_selected_codes(),
+      codes_to_invert = state_inverted_codes()
     )
   })
   
@@ -77,7 +87,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     meToolkit::makeNetworkData(
       data = curr_ind_data(),
       phecode_info = results_data,
-      inverted_codes = app_state$inverted_codes,
+      inverted_codes = state_inverted_codes(),
       no_copies = NO_SNP_COLOR,
       one_copy = ONE_SNP_COPY_COLOR,
       two_copies = TWO_SNP_COPIES_COLOR
@@ -88,6 +98,9 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   # Route all actions through a switch statement to modify the 
   # app's values 
   #---------------------------------------------------------------- 
+  # Reactive variable that stores the most recent interaction
+  app_interaction <- reactiveVal()
+  
   observeEvent(app_interaction(),{
     action_type <- app_interaction() %>% pluck('type')
     action_payload <- app_interaction() %>% pluck('payload')
@@ -96,22 +109,27 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
       codes[!(codes %in% to_remove)]
     }
     
-    switch(action_type,
-           delete = {
-             codes_to_delete <- action_payload %>% extract_codes()
-             prev_selected_codes <- app_state$selected_codes
-             app_state$selected_codes <- remove_codes(prev_selected_codes, codes_to_delete)
-             
-             print('deleting codes:')
-             print(codes_to_delete)
-           },
-           isolate = {
-             print('isolating codes!')
-           }, 
-           snp_filter_change = {
-             print('filtering snp status')
-           },
-           stop("Unknown input")
+    action_type %>% 
+      switch(
+        delete = {
+          codes_to_delete <- action_payload %>% extract_codes()
+          prev_selected_codes <- state_selected_codes()
+          state_selected_codes(remove_codes(prev_selected_codes, codes_to_delete)) 
+          
+          print('deleting codes:')
+          print(codes_to_delete)
+        },
+        selection = {
+          print('selecting codes!')
+          state_selected_codes(action_payload)
+        },
+        isolate = {
+          print('isolating codes!')
+        }, 
+        snp_filter_change = {
+          print('filtering snp status')
+        },
+        stop("Unknown input")
     )
   })
   
@@ -119,113 +137,46 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   # Setup all the components of the app
   #---------------------------------------------------------------- 
   
-  
   ## Network plot
-  network_plot <- callModule(meToolkit::network2d, 'networkPlot', curr_network_data, snp_filter=reactive(app_state$snp_filter))
-  
-  # Watch network plot for messages and send them to the interaction reactive
-  observeEvent(network_plot(),{
-    print('the network plot has a message!')
-    app_interaction(network_plot())
-  })
-  
+  callModule(
+    meToolkit::network_plot,
+    'network_plot',
+    curr_network_data,
+    snp_filter = state_snp_filter,
+    viz_type = 'free',
+    update_freq = 10,
+    action_object = app_interaction
+  )
+
   ## Upset plot
-  upset_plot <- callModule(meToolkit::upset, 'upsetPlot', curr_ind_data, select(individual_data, IID, snp))
+  upset_plot <- callModule(
+    meToolkit::upset, 'upsetPlot', 
+    curr_ind_data, 
+    select(individual_data, IID, snp)
+  )
 
+  ## Manhattan plot
+  manhattan_plot <- callModule(
+    meToolkit::manhattan_plot, 'manhattan_plot',
+    results_data = results_data,
+    selected_codes = state_selected_codes,
+    action_object = app_interaction
+  )
   
-  # deals with code selection. On startup this is passed null codes and thus selects the top based
-  # upon the previous default selection decisions set in the constants file.
-  observe({
-    app_data$included_codes <- meToolkit::chooseSelectedCodes(
-      selection = NULL,             # should get rid of this later. 
-      phewas_table = results_data,
-      just_snps = !(app_data$snp_filter),
-      p_value_threshold = P_VAL_THRESHOLD
-    )
-  })
-
-  # Take individual level data and subset it to what we want to show.
-  observe({
-
-    subseted_to_codes <- individual_data %>% 
-      meToolkit::subsetToCodes(
-        desired_codes = app_data$included_codes$code,
-        codes_to_invert = app_data$inverted_codes
-      )
-    
-    app_data$maf_subset <- mean(subseted_to_codes$snp > 0)
-    
-    app_data$subset_data <- subseted_to_codes %>%
-      filter((snp %in% c(1,2)) | !(app_data$snp_filter)) 
-
-  })
-
-  # reset the inverted codes if the user flips all cases back on.
-  observeEvent(app_data$snp_filter, {
-    app_data$inverted_codes <- c()
-  })
-
-  #----------------------------------------------------------------
-  #----------------------------------------------------------------
-  # Plots and tables
-  #----------------------------------------------------------------
-  #----------------------------------------------------------------
-
-  #----------------------------------------------------------------
-  # Manhattan Plot and table of Phewas Results
-  #----------------------------------------------------------------
+  ## PheWAS table 
+  callModule(
+    meToolkit::phewas_table, 'phewas_table',
+    results_data = results_data,
+    selected_codes = state_selected_codes,
+    action_object = app_interaction
+  )
   
-  observe({
-    app_data$included_codes
-    manhattan_plot <- callModule(
-      phewas_plot_table, 'phewas_plot_table',
-      results_data = results_data, 
-      included_codes = app_data$included_codes
-    )
-    
-    observeEvent(manhattan_plot(), {
-      print('manhattan plot has triggered')
-      app_data$included_codes <- manhattan_plot()
-    })
-  })
-  
-  # Draw network diagrams
-  observe({
-    # Generate network data 
-    network_data <- app_data$subset_data %>%
-      meToolkit::makeNetworkData(
-        results_data,
-        inverted_codes = app_data$inverted_codes,
-        no_copies = NO_SNP_COLOR,
-        one_copy = ONE_SNP_COPY_COLOR,
-        two_copies = TWO_SNP_COPIES_COLOR
-      )
-  })
-  
-  # deals with messages from components for filtering the visable codes. 
-  observeEvent(input$message, {
-    
-    message <- input$message
-    payload <- unlist(input$message$payload)[-1]
-    
-    if(message$type == 'invert'){
-      app_data$inverted_codes <- meToolkit::invertCodes(payload, app_data$inverted_codes)
-    } else {
-      app_data$included_codes <- meToolkit::codeFilter(message$type, payload, app_data$included_codes)
-    }
-  })
+  ## SNP info panel
+  callModule(
+    meToolkit::info_panel, 'info_panel', 
+    snp_name, 
+    individual_data, 
+    curr_ind_data 
+  )
 
-  #----------------------------------------------------------------
-  # Upset plot of comorbidity patterns
-  #----------------------------------------------------------------
-  # observe({
-  #   req(app_data$subset_data)
-  # 
-  #   output$upsetPlotV2 <- callModule(meToolkit::upset, 'upsetPlotV2',
-  #                                    codeData =individual_data %>% mutate(snp = ifelse(snp != 0, 1, 0)),
-  #                                    snpData = individual_data)
-  #   
-  #   # While we're at it, send data to the info boxes
-  #   callModule(meToolkit::infoPanel, 'info_panel', snp_name, individual_data, app_data$maf_subset )
-  # })
 }
