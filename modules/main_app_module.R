@@ -59,10 +59,10 @@ main_app_UI <- function(id) {
 main_app <- function(input, output, session, individual_data, results_data, snp_name) {
 
   #----------------------------------------------------------------
-  # App state that can be modified by user. All state variables are prefixed with state_*
+  # App state that can be modified by user. 
+  #   This explicitely defines what the user can interact with. 
+  #   Each snapshot of this state fully defines the current view of the app. 
   #----------------------------------------------------------------  
-  # Start with ten most significant phecodes
-  
   state <- list(
     # start with top 5 codes selected
     selected_codes = reactiveVal(results_data %>% arrange(p_val) %>% head(5) %>% pull(code)),
@@ -77,11 +77,15 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   #----------------------------------------------------------------  
   # Individual data subset by the currently viewed phecodes and if we've filtered the snp
   curr_ind_data <- reactive({
-    meToolkit::subsetToCodes(
-      individual_data, 
-      desired_codes = state$selected_codes(),
-      codes_to_invert = state$inverted_codes()
-    )
+    keep_everyone <- !(state$snp_filter())
+    # Filter the individual data to just MA carriers if needed, otw keep everyone
+    
+    individual_data %>% 
+      filter((snp > 0) | keep_everyone) %>%  
+      meToolkit::subsetToCodes(
+        desired_codes = state$selected_codes(),
+        codes_to_invert = state$inverted_codes()
+      )
   })
   
   # Network representation of the current data for use in the network plot(s)
@@ -111,6 +115,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
       codes[!(codes %in% to_remove)]
     }
     
+    print(glue::glue("Action of type {action_type} received"))
     action_type %>% 
       switch(
         delete = {
@@ -130,6 +135,8 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
         }, 
         snp_filter_change = {
           print('filtering snp status')
+          state$snp_filter(!state$snp_filter())
+          print(glue::glue('New snp filter status is {state$snp_filter()}'))
         },
         stop("Unknown input")
     )
@@ -146,7 +153,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     curr_network_data,
     snp_filter = state$snp_filter ,
     viz_type = 'free',
-    update_freq = 200,
+    update_freq = 25,
     action_object = app_interaction
   )
 
