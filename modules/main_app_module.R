@@ -62,14 +62,16 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   # App state that can be modified by user. All state variables are prefixed with state_*
   #----------------------------------------------------------------  
   # Start with ten most significant phecodes
-  state_selected_codes <- reactiveVal(results_data %>% arrange(p_val) %>% head(10) %>% pull(code))
   
-  # Start with all codes not inverted
-  state_inverted_codes <- reactiveVal(c())
-  
-  # start with all individuals regardless of snp status
-  state_snp_filter <- reactiveVal(FALSE)
-  
+  state <- list(
+    # start with top 5 codes selected
+    selected_codes = reactiveVal(results_data %>% arrange(p_val) %>% head(5) %>% pull(code)),
+    # Start with all codes not inverted
+    inverted_codes = reactiveVal(c()),
+    # start with all individuals regardless of snp status
+    snp_filter = reactiveVal(FALSE)
+  )
+ 
   #----------------------------------------------------------------
   # App values that change based upon the current state
   #----------------------------------------------------------------  
@@ -77,8 +79,8 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   curr_ind_data <- reactive({
     meToolkit::subsetToCodes(
       individual_data, 
-      desired_codes = state_selected_codes(),
-      codes_to_invert = state_inverted_codes()
+      desired_codes = state$selected_codes(),
+      codes_to_invert = state$inverted_codes()
     )
   })
   
@@ -87,7 +89,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     meToolkit::makeNetworkData(
       data = curr_ind_data(),
       phecode_info = results_data,
-      inverted_codes = state_inverted_codes(),
+      inverted_codes = state$inverted_codes(),
       no_copies = NO_SNP_COLOR,
       one_copy = ONE_SNP_COPY_COLOR,
       two_copies = TWO_SNP_COPIES_COLOR
@@ -113,15 +115,15 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
       switch(
         delete = {
           codes_to_delete <- action_payload %>% extract_codes()
-          prev_selected_codes <- state_selected_codes()
-          state_selected_codes(remove_codes(prev_selected_codes, codes_to_delete)) 
+          prev_selected_codes <- state$selected_codes()
+          state$selected_codes(remove_codes(prev_selected_codes, codes_to_delete)) 
           
           print('deleting codes:')
           print(codes_to_delete)
         },
         selection = {
           print('selecting codes!')
-          state_selected_codes(action_payload)
+          state$selected_codes(action_payload)
         },
         isolate = {
           print('isolating codes!')
@@ -142,9 +144,9 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     meToolkit::network_plot,
     'network_plot',
     curr_network_data,
-    snp_filter = state_snp_filter,
+    snp_filter = state$snp_filter ,
     viz_type = 'free',
-    update_freq = 10,
+    update_freq = 200,
     action_object = app_interaction
   )
 
@@ -159,7 +161,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   manhattan_plot <- callModule(
     meToolkit::manhattan_plot, 'manhattan_plot',
     results_data = results_data,
-    selected_codes = state_selected_codes,
+    selected_codes = state$selected_codes,
     action_object = app_interaction
   )
   
@@ -167,7 +169,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   callModule(
     meToolkit::phewas_table, 'phewas_table',
     results_data = results_data,
-    selected_codes = state_selected_codes,
+    selected_codes = state$selected_codes,
     action_object = app_interaction
   )
   
