@@ -151,7 +151,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     meToolkit::network_plot,
     'network_plot',
     curr_network_data,
-    snp_filter = state$snp_filter ,
+    snp_filter = state$snp_filter,
     viz_type = 'free',
     update_freq = 25,
     action_object = app_interaction
@@ -161,7 +161,8 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   upset_plot <- callModule(
     meToolkit::upset, 'upsetPlot', 
     curr_ind_data, 
-    select(individual_data, IID, snp)
+    select(individual_data, IID, snp),
+    state$snp_filter
   )
 
   ## Manhattan plot
