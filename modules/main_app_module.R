@@ -64,12 +64,14 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   #   Each snapshot of this state fully defines the current view of the app. 
   #----------------------------------------------------------------  
   state <- list(
-    # start with top 5 codes selected
+    # Start with top 5 codes selected
     selected_codes = reactiveVal(results_data %>% arrange(p_val) %>% head(5) %>% pull(code)),
     # Start with all codes not inverted
     inverted_codes = reactiveVal(c()),
-    # start with all individuals regardless of snp status
-    snp_filter = reactiveVal(FALSE)
+    # Start with all individuals regardless of snp status
+    snp_filter = reactiveVal(FALSE),
+    # Pattern to highlight in network plot,
+    highlighted_pattern = reactiveVal(c())
   )
  
   #----------------------------------------------------------------
@@ -146,7 +148,8 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
         },
         pattern_highlight = {
           print('Upset sent a pattern higlight request')
-          print(action_payload)
+          print(extract_codes(action_payload))
+          state$highlighted_pattern(extract_codes(action_payload))
         },
         stop("Unknown input")
     )
@@ -158,9 +161,9 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   
   ## Network plot
   callModule(
-    meToolkit::network_plot,
-    'network_plot',
+    meToolkit::network_plot, 'network_plot',
     curr_network_data,
+    state$highlighted_pattern,
     snp_filter = state$snp_filter,
     viz_type = 'free',
     update_freq = 25,
