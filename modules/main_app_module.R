@@ -132,11 +132,21 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
         },
         isolate = {
           print('isolating codes!')
+          desired_codes <- extract_codes(action_payload)
+          if(length(desired_codes) < 2){
+            meToolkit::warnAboutSelection()
+          } else {
+            state$selected_codes(desired_codes) 
+          }
         }, 
         snp_filter_change = {
           print('filtering snp status')
           state$snp_filter(!state$snp_filter())
           print(glue::glue('New snp filter status is {state$snp_filter()}'))
+        },
+        pattern_highlight = {
+          print('Upset sent a pattern higlight request')
+          print(action_payload)
         },
         stop("Unknown input")
     )
@@ -162,7 +172,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     meToolkit::upset, 'upsetPlot', 
     curr_ind_data, 
     select(individual_data, IID, snp),
-    state$snp_filter
+    app_interaction
   )
 
   ## Manhattan plot
