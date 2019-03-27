@@ -136,11 +136,27 @@ data_loading <- function(input, output, session) {
       # from either. 
       phenome_cols <- colnames(individual_data)
       bad_codes <- setdiff(phenome_cols %>% head(-1) %>% tail(-1), unique(phewas$code))
-      app_data$phewas_data <- phewas %>% # remove bad codes from phewas
-        filter(!(code %in% bad_codes))
       
-      # remove bad codes from individual data
-      app_data$individual_data<- individual_data[,-which(phenome_cols %in% bad_codes)]
+      app_data$phewas_data <- phewas %>% # remove bad codes from phewas
+        filter(!(code %in% bad_codes)) %>% {
+          this <- .
+          # If we don't already have a tooltip defined, let's add one
+          if(!('tooltip' %in% colnames(this))){
+            this <- meToolkit::makeTooltips(this) 
+          }
+          this
+        }
+      
+      # If we don't already have a tooltip defined, let's add one
+      if(!('tooltip' %in% colnames(app_data$phewas_data))){
+        app_data$phewas_data <- meToolkit::makeTooltips(app_data$phewas_data) 
+      }
+      
+      app_data$individual_data<- individual_data
+      # remove bad codes from individual data if needed
+      if(length(bad_codes) > 0){
+        app_data$individual_data <- app_data$individual_data[,-which(phenome_cols %in% bad_codes)]
+      }
       
       # Color palette for phecode categories
       app_data$category_colors <- meToolkit::makeDescriptionPalette(app_data$phewas_data)
@@ -162,8 +178,6 @@ data_loading <- function(input, output, session) {
    
     app_data$phewas_raw <- glue('{base_dir}/phewas_results.csv') %>% read_csv()
     app_data$phenome_raw <-  here('data/preloaded/id_to_code.csv') %>% read_csv()
-    
-    
     genome_file <- glue('{base_dir}/id_to_snp.csv') %>% 
       read_csv() %>% 
       meToolkit::checkGenomeFile()  

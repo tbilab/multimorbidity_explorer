@@ -1,3 +1,7 @@
+## Preloaded data
+
+Supplied is a simulated phewas result and individual data for testing the app. Note that these results are entirely synthetic and so any patterns you may find are spurious, unfortunately.
+
 ## Input Data format
 
 There are three required files for loading data into the public facing version of MultimorbidityExplorer. All files are required to be in `.csv` format.

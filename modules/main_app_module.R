@@ -57,7 +57,6 @@ main_app_UI <- function(id) {
 }
 
 main_app <- function(input, output, session, individual_data, results_data, snp_name) {
-
   #----------------------------------------------------------------
   # App state that can be modified by user. 
   #   This explicitely defines what the user can interact with. 
@@ -79,6 +78,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   #----------------------------------------------------------------  
   # Individual data subset by the currently viewed phecodes and if we've filtered the snp
   curr_ind_data <- reactive({
+    
     keep_everyone <- !(state$snp_filter())
     # Filter the individual data to just MA carriers if needed, otw keep everyone
     
