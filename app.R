@@ -1,5 +1,12 @@
+library(shiny)
+library(shinydashboard)
+library(shinydashboardPlus)
+library(tidyverse)
+library(magrittr)
 library(here)
-source('helpers/load_libraries.R')
+library(glue)
+
+
 source('modules/data_loading_module.R')
 source('modules/main_app_module.R')
 
