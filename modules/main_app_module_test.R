@@ -1,6 +1,13 @@
 # testing main app module in own shiny app.
-source(here::here('helpers/load_libraries.R'))
-source(here::here('modules/main_app_module.R'))
+library(shiny)
+library(shinydashboard)
+library(shinydashboardPlus)
+library(tidyverse)
+library(magrittr)
+library(here)
+library(glue)
+
+source(here('modules/main_app_module.R'))
 
 cached_data <- read_rds(here('data/preloaded_rs13283456.rds'))
 

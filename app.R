@@ -6,7 +6,6 @@ library(magrittr)
 library(here)
 library(glue)
 
-
 source('modules/data_loading_module.R')
 source('modules/main_app_module.R')
 
