@@ -1,7 +1,7 @@
 library(here)
-source(here('helpers/load_libraries.R'))
-source(here('modules/data_loading_module.R'))
-source(here('modules/main_app_module.R'))
+source('helpers/load_libraries.R')
+source('modules/data_loading_module.R')
+source('modules/main_app_module.R')
 
 ui <- shinyUI(
   dashboardPage(
