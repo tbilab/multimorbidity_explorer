@@ -1,4 +1,7 @@
-source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
+ACCEPTED_FORMATS <- c(
+  "text/csv",
+  "text/comma-separated-values,text/plain",
+  ".csv")
 
 options(shiny.maxRequestSize=30*1024^2) # increase size of files we can take uploaded to 30 megs.
 

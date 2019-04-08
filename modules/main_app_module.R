@@ -1,4 +1,7 @@
-source(here('helpers/constants.R')) # everything defined here is IN UPPERCASE ONLY
+# Color of SNP carriers in upset and network plot
+NO_SNP_COLOR <- '#bdbdbd'
+ONE_SNP_COPY_COLOR <- '#fcae91'
+TWO_SNP_COPIES_COLOR <- '#a50f15'
 
 main_app_UI <- function(id) {
   ns <- NS(id)
