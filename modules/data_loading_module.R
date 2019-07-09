@@ -4,7 +4,6 @@ ACCEPTED_FORMATS <- c(
   ".csv")
 
 options(shiny.maxRequestSize=30*1024^2) # increase size of files we can take uploaded to 30 megs.
-
 data_loading_UI <- function(id) {
   ns <- NS(id)
   tagList(
@@ -26,12 +25,12 @@ data_loading_UI <- function(id) {
           fileInput(ns("phenome"), "ID to phenome file",
                     accept = ACCEPTED_FORMATS
           ),
-          shinyjs::hidden(
+          hidden(
             actionButton(ns("goToApp"), "Enter App")
           )
         ),
         mainPanel(
-          includeMarkdown(here("www/data_instructions.md"))
+          includeMarkdown("www/data_instructions.md")
         )
       )
     )
@@ -55,7 +54,7 @@ data_loading <- function(input, output, session) {
   )
   
   # find all the snps we have preloaded
-  preloaded_snps <- list.files(here('data/preloaded'), pattern = 'rs') 
+  preloaded_snps <- list.files('data/preloaded', pattern = 'rs') 
   
   output$preloaded_snps <- renderUI({
     selectInput(session$ns("dataset_selection"), "Select a pre-loaded dataset:",
@@ -67,7 +66,7 @@ data_loading <- function(input, output, session) {
     
     tryCatch({
       good_genome_file <- read_csv(input$genome$datapath) %>% 
-        meToolkit::checkGenomeFile()  
+        checkGenomeFile()  
       
       app_data$snp_name <- good_genome_file$snp_name
       app_data$genome_raw <- good_genome_file$data
@@ -87,7 +86,7 @@ data_loading <- function(input, output, session) {
   observeEvent(input$phewas, {
     
     tryCatch({
-      app_data$phewas_raw <- read_csv(input$phewas$datapath) %>% meToolkit::checkPhewasFile()
+      app_data$phewas_raw <- read_csv(input$phewas$datapath) %>% checkPhewasFile()
     },
     error = function(message){
       print(message)
@@ -103,7 +102,7 @@ data_loading <- function(input, output, session) {
   
   observeEvent(input$phenome, {
     tryCatch({
-      app_data$phenome_raw <- read_csv(input$phenome$datapath) %>% meToolkit::checkPhenomeFile()
+      app_data$phenome_raw <- read_csv(input$phenome$datapath) %>% checkPhenomeFile()
     },
     error = function(message){
       print(message)
@@ -133,7 +132,7 @@ data_loading <- function(input, output, session) {
       
       # first spread the phenome data to a wide format
       incProgress(2/3, detail = "Processing phenome data")
-      individual_data <- meToolkit::mergePhenomeGenome(phenome, genome) 
+      individual_data <- mergePhenomeGenome(phenome, genome) 
 
       # These are codes that are not shared between the phewas and phenome data. We will remove them 
       # from either. 
@@ -145,7 +144,7 @@ data_loading <- function(input, output, session) {
           this <- .
           # If we don't already have a tooltip defined, let's add one
           if(!('tooltip' %in% colnames(this))){
-            this <- meToolkit::makeTooltips(this) 
+            this <- makeTooltips(this) 
           }
           this
         } 
@@ -160,12 +159,12 @@ data_loading <- function(input, output, session) {
       }
      
       # Color palette for phecode categories
-      app_data$category_colors <- meToolkit::makeDescriptionPalette(app_data$phewas_data)
+      app_data$category_colors <- makeDescriptionPalette(app_data$phewas_data)
       
       # Sending to app
       incProgress(3/3, detail = "Sending to application!")
       
-      # shinyjs::show("goToApp")
+      # show("goToApp")
       app_data$data_loaded <- TRUE
     }) # end progress messages
   })
@@ -175,13 +174,22 @@ data_loading <- function(input, output, session) {
   })
   
   observeEvent(input$preLoadedData,{
-    base_dir <- glue('data/preloaded/{input$dataset_selection}') %>% here()
+    base_dir <- glue('data/preloaded/{input$dataset_selection}')
    
     app_data$phewas_raw <- glue('{base_dir}/phewas_results.csv') %>% read_csv()
-    app_data$phenome_raw <-  here('data/preloaded/id_to_code.csv') %>% read_csv()
+    app_data$phenome_raw <- read_csv('data/preloaded/id_to_code.csv')
     genome_file <- glue('{base_dir}/id_to_snp.csv') %>% 
-      read_csv() %>% 
-      meToolkit::checkGenomeFile()  
+      read_csv() %>% {
+        this <- .
+        
+        # Hacky fix for having id as both IID and grid in different datasets.
+        if(colnames(this)[1] == 'grid'){
+          colnames(this)[1] = 'IID'
+        }
+        
+        this
+      } %>% 
+      checkGenomeFile()  
     app_data$snp_name <- genome_file$snp_name
     app_data$genome_raw <- genome_file$data
   })

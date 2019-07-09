@@ -3,7 +3,7 @@ NO_SNP_COLOR <- '#bdbdbd'
 ONE_SNP_COPY_COLOR <- '#fcae91'
 TWO_SNP_COPIES_COLOR <- '#a50f15'
 
-main_app_UI <- function(id) {
+main_app_UI <- function(id, unique_codes) {
   ns <- NS(id)
   tagList(
     tags$head( tags$link(rel = "stylesheet", type = "text/css", href = "custom.css") ),
@@ -15,7 +15,7 @@ main_app_UI <- function(id) {
             solidHeader=TRUE,          
             collapsible = TRUE,
             div(id = 'manhattanPlot',
-               meToolkit::manhattan_plot_UI(ns('manhattan_plot'))
+               manhattan_plot_UI(ns('manhattan_plot'))
             )
         ),
         div(id = 'selected_code_box',
@@ -26,14 +26,24 @@ main_app_UI <- function(id) {
               width = NULL,
               collapsible = TRUE,
               collapsed = TRUE,
-              meToolkit::phewas_table_UI(ns('phewas_table'))
+              phewas_table_UI(ns('phewas_table')),
+              hr(),
+              selectizeInput(
+                ns("desired_codes"), 
+                "Custom select desired PheCodes (type to find)", 
+                choices = unique_codes,
+                multiple = TRUE ),
+              actionButton(
+                ns("filter_to_desired"),
+                'Filter to desired'
+              )
             )
         ),
         box(
           title = "Upset Plot",
           solidHeader = TRUE,
           width = NULL,
-          meToolkit::upset_UI(ns('upsetPlot'), div_class = 'upset_plot')
+          upset_UI(ns('upsetPlot'), div_class = 'upset_plot')
         )
       ),
       column(
@@ -42,14 +52,14 @@ main_app_UI <- function(id) {
           box(
             solidHeader = TRUE,
             width = NULL,
-            meToolkit::info_panel_UI(ns('info_panel'))
+            info_panel_UI(ns('info_panel'))
           )
         ),
         box(
           title = "Phenotype-Subject Bipartite Network",
           solidHeader = TRUE,          
           width = NULL,
-          meToolkit::network_plot_UI(ns('network_plot'), 
+          network_plot_UI(ns('network_plot'), 
                                   height = '80%', 
                                   div_class = 'network_plot',
                                   snp_colors = c(NO_SNP_COLOR, ONE_SNP_COPY_COLOR, TWO_SNP_COPIES_COLOR) )
@@ -87,7 +97,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
     
     individual_data %>% 
       filter((snp > 0) | keep_everyone) %>%  
-      meToolkit::subsetToCodes(
+      subsetToCodes(
         desired_codes = state$selected_codes(),
         codes_to_invert = state$inverted_codes()
       )
@@ -95,7 +105,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   
   # Network representation of the current data for use in the network plot(s)
   curr_network_data <- reactive({
-    meToolkit::makeNetworkData(
+    makeNetworkData(
       data = curr_ind_data(),
       phecode_info = results_data,
       inverted_codes = state$inverted_codes(),
@@ -120,7 +130,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
       codes[!(codes %in% to_remove)]
     }
     
-    print(glue::glue("Action of type {action_type} received"))
+    print(glue("Action of type {action_type} received"))
     action_type %>% 
       switch(
         delete = {
@@ -133,13 +143,17 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
         },
         selection = {
           print('selecting codes!')
-          state$selected_codes(action_payload)
+          if(length(action_payload) < 2){
+            warnAboutSelection()
+          } else {
+            state$selected_codes(action_payload)
+          }
         },
         isolate = {
           print('isolating codes!')
           desired_codes <- extract_codes(action_payload)
           if(length(desired_codes) < 2){
-            meToolkit::warnAboutSelection()
+            warnAboutSelection()
           } else {
             state$selected_codes(desired_codes) 
           }
@@ -147,12 +161,12 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
         snp_filter_change = {
           print('filtering snp status')
           state$snp_filter(!state$snp_filter())
-          print(glue::glue('New snp filter status is {state$snp_filter()}'))
+          print(glue('New snp filter status is {state$snp_filter()}'))
         },
         pattern_highlight = {
-          print('Upset sent a pattern higlight request')
-          print(extract_codes(action_payload))
-          state$highlighted_pattern(extract_codes(action_payload))
+          # print('Upset sent a pattern higlight request')
+          # print(extract_codes(action_payload))
+          # state$highlighted_pattern(extract_codes(action_payload))
         },
         stop("Unknown input")
     )
@@ -161,10 +175,9 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   #----------------------------------------------------------------
   # Setup all the components of the app
   #---------------------------------------------------------------- 
-  
   ## Network plot
   callModule(
-    meToolkit::network_plot, 'network_plot',
+    network_plot, 'network_plot',
     curr_network_data,
     state$highlighted_pattern,
     snp_filter = state$snp_filter,
@@ -175,7 +188,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
 
   ## Upset plot
   upset_plot <- callModule(
-    meToolkit::upset, 'upsetPlot', 
+    upset, 'upsetPlot', 
     curr_ind_data, 
     select(individual_data, IID, snp),
     app_interaction
@@ -183,7 +196,7 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
 
   ## Manhattan plot
   manhattan_plot <- callModule(
-    meToolkit::manhattan_plot, 'manhattan_plot',
+    manhattan_plot, 'manhattan_plot',
     results_data = results_data,
     selected_codes = state$selected_codes,
     action_object = app_interaction
@@ -191,15 +204,26 @@ main_app <- function(input, output, session, individual_data, results_data, snp_
   
   ## PheWAS table 
   callModule(
-    meToolkit::phewas_table, 'phewas_table',
+    phewas_table, 'phewas_table',
     results_data = results_data,
     selected_codes = state$selected_codes,
     action_object = app_interaction
   )
   
+  ## Multicode selecter input
+  observeEvent(input$filter_to_desired, {
+    codes_desired <- input$desired_codes
+    action_object_message <-  list(
+      type = 'selection',
+      payload = codes_desired
+    )
+    
+    app_interaction(action_object_message)
+  })
+
   ## SNP info panel
   callModule(
-    meToolkit::info_panel, 'info_panel', 
+    info_panel, 'info_panel', 
     snp_name, 
     individual_data, 
     curr_ind_data 

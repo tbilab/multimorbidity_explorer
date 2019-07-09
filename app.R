@@ -1,14 +1,19 @@
+# install.packages(c('shiny', 'shinydashboard', 'magrittr', 'here', 'glue'))
+# devtools::install_github('tbilab/meToolkit', ref = 'exportable_network_plot', force = TRUE)
 library(shiny)
 library(shinydashboard)
-library(shinydashboardPlus)
-library(tidyverse)
-library(magrittr)
-library(here)
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(readr)
+library(markdown)
 library(glue)
+library(meToolkit)
+library(shinyjs)
 
 source('modules/data_loading_module.R')
 source('modules/main_app_module.R')
-
+  
 ui <- shinyUI(
   dashboardPage(
     dashboardHeader(
@@ -17,8 +22,8 @@ ui <- shinyUI(
     ),
     dashboardSidebar(disable = TRUE),
     dashboardBody( 
-      includeCSS(here("www/custom.css")),
-      shinyjs::useShinyjs(debug = TRUE),
+      includeCSS("www/custom.css"),
+      useShinyjs(debug = TRUE),
       uiOutput("ui")
     ),
     skin = 'black'
@@ -36,7 +41,7 @@ server <- function(input, output, session) {
     if(no_data){
       data_loading_UI('data_loading')
     }else{
-      main_app_UI('main_app')
+      main_app_UI('main_app', unique_codes = unique(loaded_data()$phewas_data$code))
     }
   })
   
@@ -45,7 +50,7 @@ server <- function(input, output, session) {
     app <- callModule(
       main_app, "main_app",
       individual_data = all_data$individual_data,
-      results_data = all_data$phewas_data %>% meToolkit::buildColorPalette(category),
+      results_data = all_data$phewas_data %>% buildColorPalette(category),
       snp_name = all_data$snp_name
     )
   })

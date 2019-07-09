@@ -1,6 +1,6 @@
 ## Preloaded data
 
-Supplied is a simulated phewas result and individual data for testing the app. Note that these results are entirely synthetic and so any patterns you may find are spurious, unfortunately.
+Supplied are snps that have been preloaded. Select a SNP in the dropdown and then click 'Use preloaded data' to enter the app using the selected SNP.
 
 ## Input Data format
 
